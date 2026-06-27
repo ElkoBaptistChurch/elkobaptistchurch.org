@@ -1,0 +1,137 @@
+---
+import { getCollection } from 'astro:content';
+import { siteConfig } from '@/data/site';
+import { sortByDateDesc, toCardProps } from '@/utils/sermons';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import Button from '@/components/ui/Button.astro';
+
+const allSermons = sortByDateDesc(await getCollection('sermons'));
+const latestSermon = toCardProps(allSermons[0]);
+
+// YouTube video ID for embed — latest sermon or fallback
+const videoId = latestSermon.youtubeId ?? 'YBECuXzRKKo';
+---
+
+<section
+  aria-label="Watch online — live stream and recent sermons"
+  class="bg-burgundy-950 section-py"
+>
+  <div class="section-container">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+
+      <!-- Left: text -->
+      <div class="flex flex-col gap-6">
+        <!-- Live badge -->
+        <div class="flex items-center gap-2 w-fit">
+          <span class="relative flex h-3 w-3" aria-hidden="true">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+          </span>
+          <span class="eyebrow text-red-400 text-xs">Live Every Sunday 11:00 AM</span>
+        </div>
+
+        <SectionHeading
+          label="Watch Online"
+          heading="Join Us Online"
+          subheading="Can't make it in person? Watch our services live on YouTube every Sunday at 11:00 AM — or catch up on recent sermons anytime."
+          light
+          class="max-w-xl"
+        />
+
+        <div class="flex flex-col gap-3 text-burgundy-200 leading-relaxed">
+          <p>
+            Whether you're part of our church family or visiting online, we're glad you're here.
+          </p>
+          <p>
+            We stream every Sunday morning service live. No account required, no email sign-up &mdash; just click and watch. It&rsquo;s not the same as being there, but it&rsquo;s the same Word.
+          </p>
+          <p>
+            Our full sermon archive is free to watch anytime. Search by series or scripture, and share with a friend who needs to hear it.
+          </p>
+        </div>
+
+        <div class="flex flex-wrap gap-3 pt-2">
+          <Button
+            href={siteConfig.social.youtube}
+            variant="secondary"
+            size="md"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.96-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/>
+              <polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="var(--color-burgundy-900)"/>
+            </svg>
+            Visit Our Channel
+          </Button>
+          <Button href="/sermons/" variant="ghost" size="md" class="!text-warm-white hover:!bg-burgundy-800 active:!bg-burgundy-900">
+            Sermon Archive
+          </Button>
+        </div>
+
+        <!-- Stats -->
+        <div class="flex gap-8 pt-4 border-t border-burgundy-800">
+          <div>
+            <p class="font-display text-3xl font-bold text-warm-white">130+</p>
+            <p class="text-burgundy-400 text-sm">Years of ministry</p>
+          </div>
+          <div>
+            <p class="font-display text-3xl font-bold text-warm-white">Weekly</p>
+            <p class="text-burgundy-400 text-sm">Live streams</p>
+          </div>
+          <div>
+            <p class="font-display text-3xl font-bold text-warm-white">Free</p>
+            <p class="text-burgundy-400 text-sm">Always, forever</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: video embed -->
+      <div class="flex flex-col gap-4">
+        <!-- Video container (aspect-video = 16:9) -->
+        <div class="relative aspect-video w-full rounded-xl overflow-hidden shadow-2xl ring-1 ring-burgundy-700">
+          <iframe
+            src={`https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1`}
+            title={`Watch: ${latestSermon.title} — ${latestSermon.speaker}`}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+            loading="lazy"
+            class="absolute inset-0 w-full h-full border-0"
+          ></iframe>
+        </div>
+
+        <!-- Video caption -->
+        <div class="flex items-start gap-3">
+          <div class="w-8 h-8 rounded-full bg-burgundy-800 flex items-center justify-center flex-shrink-0 mt-0.5" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" class="text-wheat-400 ml-0.5">
+              <polygon points="5 3 19 12 5 21 5 3"/>
+            </svg>
+          </div>
+          <div>
+            <p class="font-semibold text-warm-white text-sm leading-snug">{latestSermon.title}</p>
+            <p class="font-display italic text-wheat-400 text-sm">{latestSermon.scripture}</p>
+            <p class="text-burgundy-400 text-xs mt-0.5">{latestSermon.speaker}</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<style>
+  @keyframes ping {
+    75%, 100% {
+      transform: scale(2);
+      opacity: 0;
+    }
+  }
+  .animate-ping {
+    animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .animate-ping {
+      animation: none;
+    }
+  }
+</style>

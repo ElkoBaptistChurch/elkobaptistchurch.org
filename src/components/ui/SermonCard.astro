@@ -1,0 +1,206 @@
+---
+interface SermonProps {
+  id: string;
+  title: string;
+  series?: string;
+  speaker: string;
+  date: string;
+  scripture: string;
+  description: string;
+  duration?: string;
+  youtubeId?: string;
+  tags: string[];
+  needsReview?: boolean;
+}
+
+interface Props {
+  sermon: SermonProps;
+  featured?: boolean;
+}
+
+const { sermon, featured = false } = Astro.props;
+
+const {
+  id,
+  title,
+  series,
+  speaker,
+  date,
+  scripture,
+  description,
+  duration,
+  youtubeId,
+  needsReview,
+} = sermon;
+
+const watchUrl = youtubeId
+  ? `https://www.youtube.com/watch?v=${youtubeId}`
+  : `/sermons/${id}/`;
+
+const formattedDate = new Date(date + 'T00:00:00').toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+{featured ? (
+  <article
+    class="bg-warm-white rounded-xl border border-stone-200 overflow-hidden shadow-sm"
+    aria-label={`Featured sermon: ${title}`}
+  >
+    <div class="grid lg:grid-cols-2 gap-0">
+      <div class="relative bg-gradient-to-br from-burgundy-800 to-burgundy-950 aspect-video lg:aspect-auto lg:min-h-[320px]">
+        {youtubeId ? (
+          <div class="aspect-video lg:h-full lg:absolute lg:inset-0">
+            <iframe
+              src={`https://www.youtube.com/embed/${youtubeId}`}
+              title={title}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+              class="w-full h-full"
+              loading="lazy"
+            ></iframe>
+          </div>
+        ) : (
+          <>
+            <img
+              src="/images/Pastor-Wayne-Bible.jpg"
+              alt="Pastor Wayne Holcomb preaching from the Bible"
+              class="absolute inset-0 w-full h-full object-cover"
+              loading="lazy"
+              decoding="async"
+            />
+            <div class="absolute inset-0 bg-burgundy-950/40"></div>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <div class="w-16 h-16 rounded-full bg-wheat-500/90 flex items-center justify-center shadow-lg">
+                <svg class="w-7 h-7 text-burgundy-950 ml-1" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              </div>
+            </div>
+          </>
+        )}
+        {duration && (
+          <div class="absolute bottom-3 right-3 bg-burgundy-950/80 text-warm-white text-xs font-body font-semibold px-2 py-1 rounded backdrop-blur-sm">
+            {duration}
+          </div>
+        )}
+      </div>
+
+      <div class="p-8 md:p-10 flex flex-col justify-center">
+        {series && (
+          <span class="eyebrow text-wheat-700 mb-3 block">{series}</span>
+        )}
+
+        <h2 class="font-display text-3xl md:text-4xl font-bold text-stone-900 leading-tight mb-4">
+          {title}
+        </h2>
+
+        <div class="inline-flex items-center gap-1.5 mb-5">
+          <svg class="w-4 h-4 text-wheat-600 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+          </svg>
+          <span class="text-wheat-700 text-sm font-body font-semibold">{scripture}</span>
+        </div>
+
+        <p class="text-stone-500 text-sm font-body mb-4">
+          <span class="font-semibold text-stone-700">{speaker}</span>
+          <span class="mx-1.5 text-stone-300" aria-hidden="true">&bull;</span>
+          <time datetime={date}>{formattedDate}</time>
+        </p>
+
+        <p class="text-stone-600 text-lg leading-relaxed mb-8">
+          {description}
+        </p>
+
+        <div>
+          <a
+            href={watchUrl}
+            class="inline-flex items-center gap-2.5 bg-burgundy-900 text-warm-white font-body font-semibold px-7 py-3.5 rounded-sm hover:bg-burgundy-800 active:bg-burgundy-950 transition-colors duration-200 shadow-sm hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-burgundy-700"
+            target={youtubeId ? '_blank' : undefined}
+            rel={youtubeId ? 'noopener noreferrer' : undefined}
+          >
+            <svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+            Watch This Message
+          </a>
+        </div>
+      </div>
+    </div>
+  </article>
+) : (
+  <article
+    class="bg-warm-white rounded-lg border border-stone-200 overflow-hidden shadow-sm hover:shadow-md card-lift flex flex-col h-full"
+    aria-label={`Sermon: ${title}`}
+  >
+    <div class="h-1 bg-gradient-to-r from-burgundy-700 to-burgundy-500" aria-hidden="true"></div>
+
+    <div class="p-6 md:p-7 flex flex-col flex-1">
+      <div class="flex items-center justify-between gap-2">
+        {series && (
+          <span class="eyebrow text-wheat-700 mb-2 block">{series}</span>
+        )}
+        {needsReview && (
+          <span class="flex-shrink-0 bg-stone-100 text-stone-500 text-[11px] font-body font-semibold px-2 py-0.5 rounded-full mb-2" title="Awaiting scripture/topic tagging">
+            Needs tagging
+          </span>
+        )}
+      </div>
+
+      <h3 class="font-display text-xl md:text-2xl font-bold text-stone-900 leading-snug mb-3">
+        {title}
+      </h3>
+
+      <div class="inline-flex items-center gap-1.5 mb-4">
+        <svg class="w-3.5 h-3.5 text-wheat-600 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+        </svg>
+        <span class="text-wheat-700 text-xs font-body font-semibold">{scripture}</span>
+      </div>
+
+      <div class="flex items-center justify-between mb-4 gap-2">
+        <p class="text-stone-500 text-sm font-body">
+          <span class="font-semibold text-stone-700">{speaker}</span>
+          <span class="mx-1.5 text-stone-300" aria-hidden="true">&bull;</span>
+          <time datetime={date}>{formattedDate}</time>
+        </p>
+        {duration && (
+          <span class="flex-shrink-0 bg-stone-100 text-stone-600 text-xs font-body font-semibold px-2.5 py-1 rounded-full">
+            {duration}
+          </span>
+        )}
+      </div>
+
+      <p class="text-stone-600 text-base leading-relaxed mb-6 line-clamp-3 flex-1">
+        {description}
+      </p>
+
+      <div class="mt-auto">
+        <a
+          href={watchUrl}
+          class="inline-flex items-center gap-2 text-burgundy-800 font-body font-semibold text-sm hover:text-burgundy-600 transition-colors duration-150 group focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-burgundy-700 rounded"
+          target={youtubeId ? '_blank' : undefined}
+          rel={youtubeId ? 'noopener noreferrer' : undefined}
+        >
+          <span class="w-8 h-8 rounded-full bg-burgundy-50 border border-burgundy-200 flex items-center justify-center group-hover:bg-burgundy-100 transition-colors duration-150 flex-shrink-0">
+            <svg class="w-3.5 h-3.5 text-burgundy-800 ml-0.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+          </span>
+          Watch Message
+        </a>
+      </div>
+    </div>
+  </article>
+)}
+
+<style>
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

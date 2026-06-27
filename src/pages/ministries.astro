@@ -1,0 +1,234 @@
+---
+import BaseLayout from '@/components/layout/BaseLayout.astro';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import Button from '@/components/ui/Button.astro';
+import MinistryCard from '@/components/ui/MinistryCard.astro';
+import { siteConfig } from '@/data/site';
+import { ministries } from '@/data/ministries';
+import { webPageSchema } from '@/utils/seo';
+
+const pageSchema = webPageSchema({
+  title: 'Ministries — Elko Baptist Church',
+  description:
+    'Explore ministries at Elko Baptist Church in Elko, Georgia — worship, Children\'s Church, community outreach, prayer ministry, and online worship on Facebook and YouTube.',
+  url: siteConfig.url + '/ministries/',
+  breadcrumbs: [{ name: 'Ministries', url: siteConfig.url + '/ministries/' }],
+});
+
+// Separate featured vs non-featured for layout purposes
+const featuredMinistries = ministries.filter((m) => m.featured);
+const otherMinistries = ministries.filter((m) => !m.featured);
+---
+
+<BaseLayout
+  title="Ministries"
+  description="Elko Baptist Church offers ministries for every season of life — worship, Children's Church, outreach, and prayer ministry in Elko, GA, Houston County."
+  canonicalUrl={siteConfig.url + '/ministries/'}
+  schema={pageSchema}
+>
+  <!-- ============================================================
+       1. PAGE HERO
+       ============================================================ -->
+  <section aria-label="Ministries page hero" class="bg-burgundy-950 relative overflow-hidden">
+    <div class="absolute inset-0 opacity-5" aria-hidden="true">
+      <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--color-wheat-900)_0%,_transparent_60%)]"></div>
+      <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--color-burgundy-700)_0%,_transparent_60%)]"></div>
+    </div>
+
+    <div class="section-container relative z-10 py-20 md:py-28 lg:py-36">
+      <div class="max-w-3xl">
+        <SectionHeading
+          label="Get Involved"
+          heading="Ministries"
+          subheading="Something for every season of life — from the youngest child to the wisest elder. Whatever's going on in your life, there's a place here."
+          as="h1"
+          light={true}
+        />
+
+        <div class="mt-8">
+          <Button href="/contact/" variant="secondary" size="lg">
+            Get Connected
+          </Button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       2. INTRODUCTION
+       ============================================================ -->
+  <section aria-label="Ministry introduction" class="bg-warm-white section-py">
+    <div class="section-container">
+      <div class="max-w-3xl mx-auto text-center flex flex-col items-center gap-6">
+        <span class="eyebrow text-wheat-700">The Heart Behind It All</span>
+        <h2 class="font-display text-3xl md:text-4xl font-bold text-stone-900 leading-tight">
+          These Aren't Programs.<br />They're People.
+        </h2>
+        <span class="section-rule bg-wheat-600 mx-auto" aria-hidden="true"></span>
+        <p class="text-lg md:text-xl text-stone-600 leading-relaxed">
+          Every ministry at Elko Baptist exists for one reason: <strong class="text-stone-900">people</strong>. Not to fill a calendar. Not to check a box. But because there are men, women, and children in this community who need to know they're not alone — and the church is where that kind of belonging gets built.
+        </p>
+        <p class="text-base text-stone-500 leading-relaxed max-w-2xl">
+          We're a small congregation, and our ministries reflect that. They're personal. They're warm. And they're genuinely run by people who care about you — not about impressive numbers.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       3. FEATURED MINISTRIES (alternating layout)
+       ============================================================ -->
+  {featuredMinistries.map((ministry, index) => {
+    const isEven = index % 2 === 0;
+    return (
+      <section
+        id={ministry.id}
+        aria-label={ministry.name}
+        class={`section-py ${isEven ? 'bg-cream' : 'bg-parchment'}`}
+      >
+        <div class="section-container">
+          <div class={`grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center ${!isEven ? 'lg:grid-flow-dense' : ''}`}>
+            <!-- Text column -->
+            <div class={`flex flex-col gap-6 ${!isEven ? 'lg:col-start-2' : ''}`}>
+              <div class="flex items-center gap-3">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-burgundy-100 text-burgundy-800 uppercase tracking-wide">
+                  {ministry.audience}
+                </span>
+                {ministry.meetingTime && (
+                  <span class="text-sm text-stone-500 flex items-center gap-1.5">
+                    <svg class="w-4 h-4 text-wheat-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    {ministry.meetingTime}
+                  </span>
+                )}
+              </div>
+
+              <SectionHeading
+                heading={ministry.name}
+                as="h2"
+              />
+
+              <p class="text-lg text-stone-600 leading-relaxed">{ministry.description}</p>
+
+              <a
+                href={`/contact/`}
+                class="inline-flex items-center gap-1.5 text-burgundy-800 font-semibold hover:text-burgundy-600 transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-burgundy-700 rounded self-start"
+              >
+                Learn How to Get Involved
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </a>
+            </div>
+
+            <!-- Photo column -->
+            <div class={`flex flex-col gap-3 ${!isEven ? 'lg:col-start-1 lg:row-start-1' : ''}`}>
+              {ministry.image ? (
+                <div class="relative aspect-[4/3] rounded-lg overflow-hidden shadow-lg">
+                  <img
+                    src={ministry.image}
+                    alt={`${ministry.name} at Elko Baptist Church`}
+                    class="absolute inset-0 w-full h-full object-cover"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+              ) : (
+                <div
+                  class="relative aspect-[4/3] bg-gradient-to-br from-burgundy-800 to-burgundy-950 rounded-lg overflow-hidden shadow-lg"
+                  data-photo-needed={`Photo representing ${ministry.name} ministry at Elko Baptist Church`}
+                >
+                  <div class="absolute inset-0 flex items-center justify-center">
+                    <svg class="w-16 h-16 text-burgundy-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                  <div class="absolute bottom-4 left-4 right-4">
+                    <p class="text-burgundy-300 text-sm font-body text-center">{ministry.name}</p>
+                  </div>
+                </div>
+              )}
+
+              {ministry.images && ministry.images.length > 0 && (
+                <div class="grid grid-cols-2 gap-3">
+                  {ministry.images.map((img) => (
+                    <div class="relative aspect-square rounded-lg overflow-hidden shadow-md">
+                      <img
+                        src={img}
+                        alt={`${ministry.name} at Elko Baptist Church`}
+                        class="absolute inset-0 w-full h-full object-cover"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  })}
+
+  <!-- ============================================================
+       4. OTHER MINISTRIES (card grid)
+       ============================================================ -->
+  <section aria-label="Additional ministries" class="bg-warm-white section-py">
+    <div class="section-container">
+      <SectionHeading
+        label="More Ways to Connect"
+        heading="Other Ministries"
+        subheading="Every person here matters. Every ministry reflects that."
+        as="h2"
+        class="mb-12"
+      />
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-6">
+        {otherMinistries.map((ministry) => (
+          <section id={ministry.id}>
+            <MinistryCard ministry={ministry} featured={false} />
+          </section>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       5. GET INVOLVED CTA
+       ============================================================ -->
+  <section aria-label="Get involved" class="bg-burgundy-900 section-py">
+    <div class="section-container">
+      <div class="max-w-2xl mx-auto text-center flex flex-col items-center gap-8">
+        <SectionHeading
+          label="Take the Next Step"
+          heading="Find Your Place Here"
+          subheading="You don't have to figure it all out before you start. Just show up. We'll take it from there."
+          centered={true}
+          light={true}
+          as="h2"
+        />
+
+        <div class="flex flex-wrap gap-4 justify-center">
+          <Button href="/contact/" variant="secondary" size="lg">
+            Get in Touch
+          </Button>
+          <Button href="/plan-your-visit/" variant="outline" size="lg" class="border-burgundy-300 text-burgundy-100 hover:bg-burgundy-800">
+            Plan Your Visit
+          </Button>
+        </div>
+
+        <p class="text-burgundy-300 text-sm">
+          Questions? Reach out to us at{' '}
+          <a
+            href={`mailto:${siteConfig.contact.email}`}
+            class="text-wheat-400 hover:text-wheat-300 underline underline-offset-2 transition-colors"
+          >
+            {siteConfig.contact.email}
+          </a>
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

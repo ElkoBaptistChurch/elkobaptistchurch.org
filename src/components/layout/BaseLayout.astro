@@ -1,0 +1,118 @@
+---
+import { siteConfig } from '@/data/site';
+import { buildTitle, buildCanonical, buildOgImageUrl, organizationSchema, jsonLd } from '@/utils/seo';
+import Header from '@/components/layout/Header.astro';
+import Footer from '@/components/layout/Footer.astro';
+import '@/styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  canonicalUrl?: string;
+  noIndex?: boolean;
+  pageClass?: string;
+  schema?: object;
+}
+
+const {
+  title,
+  description,
+  image,
+  canonicalUrl,
+  noIndex = false,
+  pageClass = '',
+  schema,
+} = Astro.props;
+
+const fullTitle = buildTitle(title);
+const canonical = canonicalUrl ?? buildCanonical(Astro.url.pathname);
+const ogImage = buildOgImageUrl(image);
+const orgSchema = organizationSchema();
+---
+
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- Primary Meta -->
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noIndex && <meta name="robots" content="noindex, nofollow" />}
+
+    <!-- OpenGraph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${siteConfig.name} — ${title}`} />
+    <meta property="og:site_name" content={siteConfig.name} />
+    <meta property="og:locale" content={siteConfig.locale} />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <meta name="theme-color" content={siteConfig.themeColor} />
+
+    <!-- Fonts: Preconnect for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@400;500;600;700&display=swap"
+    />
+
+    <!-- JSON-LD: Organization (site-wide) -->
+    <script type="application/ld+json" set:html={jsonLd(orgSchema)} />
+
+    <!-- JSON-LD: Page-specific schema -->
+    {schema && <script type="application/ld+json" set:html={jsonLd(schema)} />}
+
+    <!-- Sitemap -->
+    <link rel="sitemap" href="/sitemap-index.xml" />
+  </head>
+
+  <body class="min-h-screen flex flex-col bg-cream font-body text-stone-900">
+    <!-- Skip to content for keyboard/screen reader users -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <Header />
+
+    <main id="main-content" class={`flex-1 ${pageClass}`} tabindex="-1">
+      <slot />
+    </main>
+
+    <Footer />
+
+    <!-- Mobile nav toggle script (vanilla, < 500 bytes) -->
+    <script>
+      const btn = document.getElementById('mobile-menu-btn');
+      const menu = document.getElementById('mobile-menu');
+      const openIcon = document.getElementById('menu-open-icon');
+      const closeIcon = document.getElementById('menu-close-icon');
+
+      if (btn && menu) {
+        btn.addEventListener('click', () => {
+          const isOpen = menu.classList.contains('hidden');
+          menu.classList.toggle('hidden', !isOpen);
+          btn.setAttribute('aria-expanded', String(isOpen));
+          openIcon?.classList.toggle('hidden', isOpen);
+          closeIcon?.classList.toggle('hidden', !isOpen);
+        });
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,38 @@
+---
+interface Props {
+  href?: string;
+  class?: string;
+  padded?: boolean;
+  hoverable?: boolean;
+  background?: 'white' | 'cream' | 'parchment' | 'burgundy';
+}
+
+const {
+  href,
+  class: className = '',
+  padded = true,
+  hoverable = false,
+  background = 'white',
+} = Astro.props;
+
+const bgs: Record<string, string> = {
+  white: 'bg-warm-white',
+  cream: 'bg-cream',
+  parchment: 'bg-parchment',
+  burgundy: 'bg-burgundy-900 text-warm-white',
+};
+
+const Tag = href ? 'a' : 'div';
+const classes = [
+  'rounded-lg border border-stone-200 overflow-hidden',
+  bgs[background],
+  padded ? 'p-6 md:p-8' : '',
+  hoverable ? 'card-lift' : '',
+  href ? 'block focus-visible:outline-2 focus-visible:outline-burgundy-700' : '',
+  className,
+].join(' ');
+---
+
+<Tag href={href} class={classes}>
+  <slot />
+</Tag>

@@ -1,0 +1,539 @@
+---
+import BaseLayout from '@/components/layout/BaseLayout.astro';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import Button from '@/components/ui/Button.astro';
+import { siteConfig } from '@/data/site';
+import { webPageSchema, buildCanonical } from '@/utils/seo';
+
+const pageDescription =
+  'Planning your first visit to Elko Baptist Church in Elko, GA? Find service times, directions, and what to expect — we\'d love to welcome you this Sunday.';
+
+const schema = webPageSchema({
+  title: 'Plan Your Visit',
+  description: pageDescription,
+  url: buildCanonical('/plan-your-visit/'),
+  breadcrumbs: [{ name: 'Plan Your Visit', url: buildCanonical('/plan-your-visit/') }],
+});
+
+const [mw, cc] = siteConfig.serviceTimes;
+
+const whatToExpect = [
+  {
+    icon: 'shirt',
+    heading: 'Come as you are — literally.',
+    body: 'There\'s no dress code here. Jeans, Sunday best, work clothes — none of that matters. What matters is that you showed up.',
+  },
+  {
+    icon: 'clock',
+    heading: 'Arrive whenever you\'re ready.',
+    body: 'Doors open before the service starts. Whether you\'re five minutes early or a few minutes late, we\'ll find you a seat and you\'ll feel right at home.',
+  },
+  {
+    icon: 'music',
+    heading: 'Authentic, acoustic worship.',
+    body: 'Our worship is warm and genuine — guitar, mandolin, piano. A mix of beloved hymns and contemporary songs that point to Jesus.',
+  },
+  {
+    icon: 'family',
+    heading: 'Your kids are welcome here.',
+    body: 'Children\'s Church meets at 11:30 AM — right after church announcements and worship songs — giving kids their own space to learn about God\'s Word together.',
+  },
+  {
+    icon: 'team',
+    heading: 'Real worship, real leadership.',
+    body: 'There\'s a freedom to worship here — guitar, mandolin, piano, and a pastor who shows up for his people. Want to know who you\'ll meet on Sunday?',
+    link: { href: '/staff/', label: 'Meet our team' },
+  },
+];
+
+const faqs = [
+  {
+    question: 'Do I need to be a Christian to attend?',
+    answer: 'Not at all. Come and see. Whether you\'re exploring faith for the first time, returning after years away, or just curious — the door is open. No strings attached.',
+  },
+  {
+    question: 'Do I have to give money?',
+    answer: 'No. We do not pass the plate during service. Offering boxes are available if you feel led to give — but there\'s no expectation for guests and no one is watching or keeping score.',
+  },
+  {
+    question: 'What denomination are you?',
+    answer: 'We strive to teach the whole Bible — all of it, faithfully. We believe the Bible is God\'s Word, salvation is by grace through faith in Jesus Christ, and every person who walks through our door is a person worth knowing.',
+  },
+  {
+    question: 'Can I come alone?',
+    answer: 'Absolutely. Many of our members walked in for the first time by themselves. We\'ll introduce ourselves. You won\'t stay a stranger long.',
+  },
+  {
+    question: 'Is the building accessible?',
+    answer: 'Yes. We have a covered wheelchair ramp entrance and an accessible restroom on site. If you have specific accessibility needs, don\'t hesitate to reach out ahead of your visit.',
+  },
+  {
+    question: 'Is there parking?',
+    answer: 'Yes — free parking right on site. Plenty of space, and it\'s a short walk to the door.',
+  },
+  {
+    question: 'What if I haven\'t been to church in years — or ever?',
+    answer: 'Then this page was written for you. Show up. We\'ve seen God do remarkable things in people who just decided to try one Sunday.',
+  },
+];
+---
+
+<BaseLayout
+  title="Plan Your Visit"
+  description={pageDescription}
+  schema={schema}
+>
+
+  <!-- ====================================================
+       HERO
+  ===================================================== -->
+  <section
+    aria-label="Plan your visit hero"
+    class="bg-burgundy-900 relative overflow-hidden"
+  >
+    <div
+      class="absolute inset-0 opacity-20 bg-[radial-gradient(ellipse_at_top_right,_var(--color-wheat-800)_0%,_transparent_55%)]"
+      aria-hidden="true"
+    ></div>
+    <div
+      class="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_rgba(12,31,15,0.6)_0%,_transparent_65%)]"
+      aria-hidden="true"
+    ></div>
+
+    <div class="relative z-10 section-container py-24 md:py-32">
+      <div class="max-w-3xl">
+        <span class="eyebrow text-wheat-400 mb-5 block">First Time Here?</span>
+        <h1 class="font-display text-5xl md:text-6xl lg:text-7xl font-bold text-warm-white leading-tight mb-6">
+          We've Been Waiting for You.
+        </h1>
+        <p class="text-burgundy-100 text-xl md:text-2xl leading-relaxed mb-4 max-w-2xl">
+          If you've never been to Elko Baptist — or to any church — this page is for you.
+        </p>
+        <p class="text-burgundy-200 text-lg leading-relaxed mb-10 max-w-2xl">
+          No expectations. No performance required. Just a warm little church in Elko, Georgia
+          that has been welcoming strangers-turned-family since 1891.
+        </p>
+
+        <!-- Service times quick display -->
+        <div class="flex flex-wrap gap-3 mb-10" role="list" aria-label="Service times">
+          {siteConfig.serviceTimes.map((service) => (
+            <div
+              role="listitem"
+              class="inline-flex items-center gap-2 bg-burgundy-800/70 border border-burgundy-700/60 text-burgundy-100 rounded-full px-4 py-2.5 text-sm font-body font-medium backdrop-blur-sm"
+            >
+              <span class="w-1.5 h-1.5 rounded-full bg-wheat-400 flex-shrink-0" aria-hidden="true"></span>
+              <span class="font-semibold text-warm-white">{service.day}</span>
+              <span class="text-burgundy-200">{service.time}</span>
+              <span class="text-burgundy-300 hidden sm:inline">&mdash; {service.name}</span>
+            </div>
+          ))}
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-4">
+          <Button href="#times" variant="secondary" size="lg">
+            See Service Times
+          </Button>
+          <Button
+            href="#directions"
+            variant="outline"
+            size="lg"
+            class="border-warm-white/60 text-warm-white hover:bg-warm-white/10 hover:border-warm-white"
+          >
+            Get Directions
+          </Button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================
+       WHAT TO EXPECT
+  ===================================================== -->
+  <section
+    id="expect"
+    aria-labelledby="expect-heading"
+    class="section-py bg-cream"
+  >
+    <div class="section-container">
+      <div class="mb-14">
+        <SectionHeading
+          label="No Surprises"
+          heading="What to Expect"
+          subheading="We know walking into a church for the first time can feel intimidating. Here's exactly what Sunday morning looks like at Elko Baptist."
+          as="h2"
+        />
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+        {whatToExpect.map((item) => (
+          <div class="bg-warm-white rounded-lg border border-stone-200 p-7 md:p-8 shadow-sm">
+            <!-- Icon container -->
+            <div class="w-11 h-11 rounded-lg bg-burgundy-50 border border-burgundy-100 flex items-center justify-center mb-5" aria-hidden="true">
+              {item.icon === 'shirt' && (
+                <svg class="w-5 h-5 text-burgundy-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3a2 2 0 01-2 2v2H5M9 3a2 2 0 002 2h2a2 2 0 002-2M9 3h6m-3 9v9m0-9H8m3 0h3" />
+                </svg>
+              )}
+              {item.icon === 'clock' && (
+                <svg class="w-5 h-5 text-burgundy-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              )}
+              {item.icon === 'music' && (
+                <svg class="w-5 h-5 text-burgundy-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                </svg>
+              )}
+              {item.icon === 'family' && (
+                <svg class="w-5 h-5 text-burgundy-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+              )}
+              {item.icon === 'team' && (
+                <svg class="w-5 h-5 text-burgundy-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 14a4 4 0 100-8 4 4 0 000 8zm0 0c-4.418 0-8 2.239-8 5v1h16v-1c0-2.761-3.582-5-8-5z" />
+                </svg>
+              )}
+            </div>
+
+            <h3 class="font-display text-xl font-bold text-stone-900 mb-3 leading-snug">
+              {item.heading}
+            </h3>
+            <p class="text-stone-600 text-lg leading-relaxed">
+              {item.body}
+            </p>
+            {item.link && (
+              <a
+                href={item.link.href}
+                class="inline-flex items-center gap-1.5 text-burgundy-700 font-semibold text-base mt-4 hover:text-burgundy-900 transition-colors focus-visible:outline-2 focus-visible:outline-burgundy-700 rounded"
+              >
+                {item.link.label}
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </a>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================
+       SERVICE TIMES
+  ===================================================== -->
+  <section
+    id="times"
+    aria-labelledby="times-heading"
+    class="bg-burgundy-900 relative overflow-hidden"
+  >
+    <div
+      class="absolute inset-0 opacity-10 bg-[radial-gradient(ellipse_at_center,_var(--color-wheat-600)_0%,_transparent_70%)]"
+      aria-hidden="true"
+    ></div>
+
+    <div class="relative z-10 section-container section-py">
+      <div class="text-center mb-14">
+        <SectionHeading
+          label="When We Gather"
+          heading="Service Times"
+          centered={true}
+          light={true}
+          as="h2"
+        />
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
+        <!-- Morning Worship -->
+        <div class="bg-warm-white rounded-xl overflow-hidden shadow-md flex">
+          <div class="w-2 bg-wheat-500 flex-shrink-0"></div>
+          <div class="p-7 text-center flex-1">
+            <p class="text-burgundy-600 text-xs font-semibold uppercase tracking-widest mb-3">Sunday Morning</p>
+            <p class="font-display text-5xl font-bold text-burgundy-900 leading-none mb-2">{mw.time}</p>
+            <p class="font-body font-semibold text-lg text-stone-700 mb-1">{mw.name}</p>
+            <p class="text-stone-500 text-sm">Open to everyone</p>
+          </div>
+        </div>
+        <!-- Children's Church -->
+        <div class="bg-warm-white rounded-xl overflow-hidden shadow-md flex">
+          <div class="w-2 bg-burgundy-200 flex-shrink-0"></div>
+          <div class="p-7 text-center flex-1">
+            <p class="text-burgundy-600 text-xs font-semibold uppercase tracking-widest mb-3">During Worship</p>
+            <p class="font-display text-5xl font-bold text-burgundy-900 leading-none mb-2">{cc.time}</p>
+            <p class="font-body font-semibold text-lg text-stone-700 mb-1">{cc.name}</p>
+            <p class="text-stone-500 text-sm">After announcements &amp; worship songs</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Livestream note -->
+      <div class="mt-10 text-center">
+        <div class="inline-flex items-center gap-3 bg-burgundy-800/60 border border-burgundy-700/60 rounded-full px-6 py-3 backdrop-blur-sm">
+          <span class="flex-shrink-0 w-2 h-2 rounded-full bg-wheat-400 animate-pulse" aria-hidden="true"></span>
+          <p class="text-burgundy-100 text-sm font-body">
+            Morning Worship is live-streamed on YouTube every Sunday at 11:00 AM.
+            <a
+              href={siteConfig.social.youtube}
+              class="text-wheat-400 font-semibold hover:text-wheat-300 transition-colors ml-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wheat-400 rounded"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Watch live &rarr;
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================
+       LOCATION & DIRECTIONS
+  ===================================================== -->
+  <section
+    id="directions"
+    aria-labelledby="directions-heading"
+    class="section-py bg-parchment"
+  >
+    <div class="section-container">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+        <!-- Text content -->
+        <div>
+          <SectionHeading
+            label="Find Us"
+            heading="Location &amp; Directions"
+            subheading="We're in Elko, Georgia — a small community in Houston County between Perry and Warner Robins."
+            as="h2"
+          />
+
+          <!-- Address card -->
+          <div class="mt-8 bg-warm-white rounded-lg border border-stone-200 p-6 shadow-sm">
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-lg bg-burgundy-50 border border-burgundy-100 flex items-center justify-center flex-shrink-0 mt-0.5" aria-hidden="true">
+                <svg class="w-5 h-5 text-burgundy-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+              </div>
+              <div>
+                <p class="font-body font-semibold text-stone-900 text-lg mb-1">Elko Baptist Church</p>
+                <address class="not-italic text-stone-600 text-lg leading-relaxed">
+                  {siteConfig.contact.address.full}<br />
+                  Houston County, Georgia
+                </address>
+                <p class="text-stone-500 text-base mt-2">
+                  Near Perry, GA &bull; Near Warner Robins, GA
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Directions blurb -->
+          <div class="mt-8">
+            <h3 class="font-display text-xl font-bold text-stone-900 mb-4">Getting Here</h3>
+            <ul class="space-y-3 text-stone-600 text-lg">
+              <li class="flex items-start gap-3">
+                <span class="w-1.5 h-1.5 rounded-full bg-wheat-500 mt-2.5 flex-shrink-0" aria-hidden="true"></span>
+                <span><strong class="text-stone-800">From Perry:</strong> Take US-341 South toward Elko. Turn onto Oak Street. The church is on your right.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="w-1.5 h-1.5 rounded-full bg-wheat-500 mt-2.5 flex-shrink-0" aria-hidden="true"></span>
+                <span><strong class="text-stone-800">From Warner Robins:</strong> Head south on US-129 through Perry, then follow US-341 South to Oak Street.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="w-1.5 h-1.5 rounded-full bg-wheat-500 mt-2.5 flex-shrink-0" aria-hidden="true"></span>
+                <span><strong class="text-stone-800">Parking:</strong> Ample free parking on site. Accessible spaces available near the main entrance.</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="mt-8">
+            <Button
+              href={siteConfig.contact.mapsUrl}
+              variant="primary"
+              size="md"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              Open in Google Maps
+            </Button>
+          </div>
+        </div>
+
+        <!-- Map -->
+        <div
+          class="relative aspect-square lg:aspect-auto lg:min-h-[480px] rounded-xl overflow-hidden shadow-md"
+        >
+          <img
+            src="/images/map.png"
+            alt="Map showing the location of Elko Baptist Church at 112 Oak Street (off Elko Road) in Elko, GA 31025"
+            class="absolute inset-0 w-full h-full object-cover"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================
+       FOR FAMILIES WITH KIDS
+  ===================================================== -->
+  <section
+    aria-labelledby="families-heading"
+    class="section-py bg-cream"
+  >
+    <div class="section-container">
+      <div class="max-w-4xl mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          <!-- Icon / Visual -->
+          <div class="flex justify-center lg:justify-start">
+            <div class="relative">
+              <div class="w-64 h-64 rounded-full border-2 border-burgundy-100 overflow-hidden shadow-md">
+                <img
+                  src="/images/Church-Children.jpg"
+                  alt="Children gathered together at Elko Baptist Church"
+                  class="w-full h-full object-cover"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <!-- Decorative dots -->
+              <div class="absolute -top-3 -right-3 w-6 h-6 rounded-full bg-wheat-400" aria-hidden="true"></div>
+              <div class="absolute -bottom-2 -left-4 w-4 h-4 rounded-full bg-burgundy-300" aria-hidden="true"></div>
+            </div>
+          </div>
+
+          <!-- Text content -->
+          <div>
+            <SectionHeading
+              label="Families Welcome"
+              heading="Your Kids Belong Here Too."
+              as="h2"
+            />
+
+            <div class="mt-6 space-y-5 text-stone-600 text-lg leading-relaxed">
+              <p>
+                We love children, and we mean it. Kids are not a distraction from worship at Elko Baptist — they're part of it.
+                If your little one gets wiggly or makes noise during the service, you're still welcome. Every parent who has walked through our door knows exactly how that feels.
+              </p>
+              <p>
+                <strong class="text-stone-800">Children's Church meets at 11:30 AM</strong> — right after church announcements and worship songs — giving kids their own space to make friends and learn about God's Word together.
+              </p>
+              <p>
+                If you have questions about what to expect for your child, don't hesitate to reach out to us ahead of time. We want your first visit to be stress-free.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================
+       FAQ
+  ===================================================== -->
+  <section
+    aria-labelledby="faq-heading"
+    class="section-py bg-parchment"
+  >
+    <div class="section-container">
+      <div class="max-w-3xl mx-auto">
+        <div class="mb-12">
+          <SectionHeading
+            label="Common Questions"
+            heading="Things People Wonder Before They Visit"
+            subheading="We've heard these questions before. Here are honest answers."
+            as="h2"
+          />
+        </div>
+
+        <div class="space-y-0 divide-y divide-stone-200 border border-stone-200 rounded-xl overflow-hidden bg-warm-white shadow-sm">
+          {faqs.map((faq) => (
+            <div class="p-7 md:p-8">
+              <h3 class="font-display text-xl font-bold text-stone-900 mb-3">
+                {faq.question}
+              </h3>
+              <p class="text-stone-600 text-lg leading-relaxed">
+                {faq.answer}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        <div class="mt-10 text-center">
+          <p class="text-stone-600 text-lg mb-5">
+            Still have questions? We're happy to talk.
+          </p>
+          <Button href="/contact/" variant="outline" size="md">
+            Get in Touch
+          </Button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================
+       FINAL CTA
+  ===================================================== -->
+  <section
+    aria-labelledby="final-cta-heading"
+    class="bg-burgundy-900 relative overflow-hidden"
+  >
+    <div
+      class="absolute inset-0 opacity-15 bg-[radial-gradient(ellipse_at_bottom_right,_var(--color-wheat-700)_0%,_transparent_60%)]"
+      aria-hidden="true"
+    ></div>
+
+    <div class="relative z-10 section-container section-py">
+      <div class="max-w-2xl mx-auto text-center">
+        <span class="eyebrow text-wheat-400 mb-5 block">You're Invited</span>
+        <h2
+          id="final-cta-heading"
+          class="font-display text-4xl md:text-5xl font-bold text-warm-white leading-tight mb-6"
+        >
+          We'll Save You a Seat.
+        </h2>
+        <p class="text-burgundy-100 text-xl leading-relaxed mb-4">
+          Every Sunday at 11:00 AM, a little church in Elko, Georgia gathers to worship together.
+          And every Sunday, there's room for one more.
+        </p>
+        <p class="text-burgundy-200 text-lg leading-relaxed mb-10">
+          You don't have to have it all together. You don't have to know the songs.
+          You just have to show up.
+        </p>
+
+        <!-- Address block -->
+        <div class="flex justify-center mb-10">
+          <address class="not-italic text-burgundy-300 text-base text-center">
+            <span class="block font-semibold text-burgundy-100">{siteConfig.name}</span>
+            {siteConfig.contact.address.full}
+          </address>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <Button
+            href={siteConfig.contact.mapsUrl}
+            variant="secondary"
+            size="lg"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Get Directions
+          </Button>
+          <Button
+            href="/contact/"
+            variant="outline"
+            size="lg"
+            class="border-warm-white/60 text-warm-white hover:bg-warm-white/10 hover:border-warm-white"
+          >
+            Contact Us
+          </Button>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,325 @@
+---
+import BaseLayout from '@/components/layout/BaseLayout.astro';
+import Button from '@/components/ui/Button.astro';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import { siteConfig } from '@/data/site';
+import { localBusinessSchema } from '@/utils/seo';
+
+const schema = localBusinessSchema();
+
+const description =
+  'Contact Elko Baptist Church in Elko, GA (Houston County). Email us at elkobaptistchurch@gmail.com, or visit us at 112 Oak Street, Elko, GA 31025. We\'d love to hear from you.';
+---
+
+<BaseLayout
+  title="Contact"
+  description={description}
+  schema={schema}
+>
+
+  <!-- ============================================================
+       PAGE HERO
+       ============================================================ -->
+  <section
+    aria-label="Contact page header"
+    class="bg-burgundy-950 section-py relative overflow-hidden"
+  >
+    <!-- Decorative texture -->
+    <div class="absolute inset-0 opacity-5" aria-hidden="true">
+      <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--color-burgundy-700)_0%,_transparent_60%)]"></div>
+      <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--color-wheat-900)_0%,_transparent_60%)]"></div>
+    </div>
+
+    <div class="section-container relative z-10">
+      <div class="max-w-2xl">
+        <SectionHeading
+          label="Reach Out"
+          heading="We'd Love to Hear From You"
+          subheading="Whether you have a question, need directions, or just want to say hello — we're here."
+          as="h1"
+          light={true}
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       CONTACT GRID: Form + Info
+       ============================================================ -->
+  <section
+    aria-label="Contact form and information"
+    class="section-py bg-cream"
+  >
+    <div class="section-container">
+      <div class="grid grid-cols-1 lg:grid-cols-5 gap-10 xl:gap-16">
+
+        <!-- LEFT: Contact form (3/5 width on lg) -->
+        <div class="lg:col-span-3">
+          <div class="bg-warm-white rounded-lg border border-stone-200 p-6 md:p-8">
+            <h2 class="font-display text-2xl font-bold text-stone-900 mb-2">
+              Send Us a Message
+            </h2>
+            <p class="text-stone-500 text-sm mb-6">
+              We typically respond within 1&ndash;2 business days.
+            </p>
+
+            <!--
+              Real form submission requires Cloudflare Pages Functions or Formspree — see README.
+              Static fallback: action="mailto:elkobaptistchurch@gmail.com"
+            -->
+            <form
+              method="POST"
+              action="/api/contact"
+              novalidate
+              class="flex flex-col gap-5"
+            >
+              <!-- Name -->
+              <div class="flex flex-col gap-1.5">
+                <label for="contact-name" class="font-body font-medium text-stone-800 text-sm">
+                  Full Name <span class="text-wheat-700" aria-label="required">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="contact-name"
+                  name="name"
+                  required
+                  autocomplete="name"
+                  placeholder="Your name"
+                  class="w-full px-4 py-3 text-stone-900 bg-cream border border-stone-300 rounded-sm text-base
+                         focus:outline-none focus:ring-2 focus:ring-burgundy-700 focus:border-burgundy-700
+                         placeholder:text-stone-400 transition-colors"
+                />
+              </div>
+
+              <!-- Email -->
+              <div class="flex flex-col gap-1.5">
+                <label for="contact-email" class="font-body font-medium text-stone-800 text-sm">
+                  Email Address <span class="text-wheat-700" aria-label="required">*</span>
+                </label>
+                <input
+                  type="email"
+                  id="contact-email"
+                  name="email"
+                  required
+                  autocomplete="email"
+                  placeholder="your@email.com"
+                  class="w-full px-4 py-3 text-stone-900 bg-cream border border-stone-300 rounded-sm text-base
+                         focus:outline-none focus:ring-2 focus:ring-burgundy-700 focus:border-burgundy-700
+                         placeholder:text-stone-400 transition-colors"
+                />
+              </div>
+
+              <!-- Phone (optional) -->
+              <div class="flex flex-col gap-1.5">
+                <label for="contact-phone" class="font-body font-medium text-stone-800 text-sm">
+                  Phone Number <span class="text-stone-400 font-normal text-xs">(optional)</span>
+                </label>
+                <input
+                  type="tel"
+                  id="contact-phone"
+                  name="phone"
+                  autocomplete="tel"
+                  placeholder="(478) 555-0123"
+                  class="w-full px-4 py-3 text-stone-900 bg-cream border border-stone-300 rounded-sm text-base
+                         focus:outline-none focus:ring-2 focus:ring-burgundy-700 focus:border-burgundy-700
+                         placeholder:text-stone-400 transition-colors"
+                />
+              </div>
+
+              <!-- Message -->
+              <div class="flex flex-col gap-1.5">
+                <label for="contact-message" class="font-body font-medium text-stone-800 text-sm">
+                  Message <span class="text-wheat-700" aria-label="required">*</span>
+                </label>
+                <textarea
+                  id="contact-message"
+                  name="message"
+                  required
+                  rows="5"
+                  placeholder="How can we help you? Feel free to ask about visiting, service times, or anything else on your heart."
+                  class="w-full px-4 py-3 text-stone-900 bg-cream border border-stone-300 rounded-sm text-base
+                         focus:outline-none focus:ring-2 focus:ring-burgundy-700 focus:border-burgundy-700
+                         placeholder:text-stone-400 transition-colors resize-y min-h-[120px]"
+                ></textarea>
+              </div>
+
+              <!-- Submit -->
+              <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 pt-1">
+                <Button variant="primary" size="md" type="submit">
+                  Send Message
+                </Button>
+                <p class="text-stone-400 text-xs leading-relaxed">
+                  Your information will never be shared or sold.
+                </p>
+              </div>
+
+            </form>
+          </div>
+        </div>
+
+        <!-- RIGHT: Contact info (2/5 width on lg) -->
+        <div class="lg:col-span-2 flex flex-col gap-6">
+
+          <!-- Address card -->
+          <div class="bg-parchment rounded-lg border border-stone-200 p-6">
+            <h3 class="font-display text-lg font-bold text-stone-900 mb-4 flex items-center gap-2">
+              <svg class="w-5 h-5 text-wheat-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              Find Us
+            </h3>
+            <address class="not-italic text-stone-700 text-base leading-relaxed mb-4">
+              {siteConfig.contact.address.street}<br />
+              {siteConfig.contact.address.city}, {siteConfig.contact.address.state} {siteConfig.contact.address.zip}<br />
+              <span class="text-stone-500 text-sm">{siteConfig.contact.address.county}</span>
+            </address>
+            <a
+              href={siteConfig.contact.mapsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-1.5 text-burgundy-800 font-semibold text-sm hover:text-burgundy-600 transition-colors focus-visible:outline-2 focus-visible:outline-burgundy-700 rounded"
+              aria-label="View Elko Baptist Church on Google Maps (opens in new tab)"
+            >
+              View on Google Maps
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </a>
+            <p class="text-stone-400 text-xs mt-3">Mailing address: same as above</p>
+          </div>
+
+          <!-- Email -->
+          <div class="bg-parchment rounded-lg border border-stone-200 p-6">
+            <h3 class="font-display text-lg font-bold text-stone-900 mb-4 flex items-center gap-2">
+              <svg class="w-5 h-5 text-wheat-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+              </svg>
+              Get in Touch
+            </h3>
+            <ul class="flex flex-col gap-3">
+              <li>
+                <a
+                  href={`mailto:${siteConfig.contact.email}`}
+                  class="flex items-center gap-2 text-stone-700 hover:text-burgundy-800 transition-colors focus-visible:outline-2 focus-visible:outline-burgundy-700 rounded text-base font-medium break-all"
+                >
+                  <svg class="w-4 h-4 flex-shrink-0 text-stone-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                  {siteConfig.contact.email}
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Service times -->
+          <div class="bg-parchment rounded-lg border border-stone-200 p-6">
+            <h3 class="font-display text-lg font-bold text-stone-900 mb-4 flex items-center gap-2">
+              <svg class="w-5 h-5 text-wheat-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Service Times
+            </h3>
+            <ul class="flex flex-col gap-3" role="list">
+              {siteConfig.serviceTimes.map((service) => (
+                <li class="flex items-start gap-3">
+                  <span class="w-1.5 h-1.5 rounded-full bg-wheat-500 mt-2.5 flex-shrink-0" aria-hidden="true"></span>
+                  <div>
+                    <p class="font-semibold text-stone-800 text-sm leading-snug">{service.name}</p>
+                    <p class="text-stone-500 text-sm">{service.day} &mdash; {service.time}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <!-- Social links -->
+          <div class="bg-parchment rounded-lg border border-stone-200 p-6">
+            <h3 class="font-display text-lg font-bold text-stone-900 mb-4">
+              Follow Along
+            </h3>
+            <div class="flex flex-col gap-3">
+              <a
+                href={siteConfig.social.facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="flex items-center gap-3 text-stone-700 hover:text-burgundy-800 transition-colors focus-visible:outline-2 focus-visible:outline-burgundy-700 rounded font-medium text-sm"
+                aria-label="Follow Elko Baptist Church on Facebook (opens in new tab)"
+              >
+                <svg class="w-5 h-5 flex-shrink-0 text-[#1877F2]" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                </svg>
+                Facebook
+              </a>
+              <a
+                href={siteConfig.social.youtube}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="flex items-center gap-3 text-stone-700 hover:text-burgundy-800 transition-colors focus-visible:outline-2 focus-visible:outline-burgundy-700 rounded font-medium text-sm"
+                aria-label="Watch Elko Baptist Church on YouTube (opens in new tab)"
+              >
+                <svg class="w-5 h-5 flex-shrink-0 text-[#FF0000]" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                </svg>
+                YouTube
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       MAP PLACEHOLDER
+       ============================================================ -->
+  <section
+    aria-label="Church location map"
+    class="bg-parchment section-py border-t border-stone-200"
+  >
+    <div class="section-container">
+      <div class="max-w-3xl mx-auto">
+        <!-- Map pin placeholder -->
+        <div
+          class="rounded-xl border-2 border-stone-200 bg-warm-white overflow-hidden"
+        >
+          <!-- Map image -->
+          <div class="relative h-64 sm:h-80 lg:h-[480px]">
+            <img
+              src="/images/map.png"
+              alt="Map showing the location of Elko Baptist Church at 112 Oak Street (off Elko Road) in Elko, GA 31025"
+              class="absolute inset-0 w-full h-full object-cover"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+
+          <!-- Address + CTA bar -->
+          <div class="px-6 py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+              <p class="font-display font-bold text-stone-900 text-base">Elko Baptist Church</p>
+              <address class="not-italic text-stone-500 text-sm mt-0.5">
+                {siteConfig.contact.address.full}
+              </address>
+            </div>
+            <Button
+              href={siteConfig.contact.mapsUrl}
+              variant="outline"
+              size="sm"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Get directions to Elko Baptist Church on Google Maps (opens in new tab)"
+            >
+              <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+              </svg>
+              Get Directions
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>

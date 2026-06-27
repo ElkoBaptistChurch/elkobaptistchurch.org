@@ -1,0 +1,179 @@
+---
+import { getCollection } from 'astro:content';
+import { sortByDateDesc, toCardProps } from '@/utils/sermons';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import Button from '@/components/ui/Button.astro';
+
+const allSermons = sortByDateDesc(await getCollection('sermons'));
+const latestSermon = toCardProps(allSermons[0]);
+const otherSermons = allSermons.slice(1, 3).map(toCardProps);
+
+function formatDate(isoDate: string): string {
+  const d = new Date(isoDate + 'T00:00:00');
+  return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+}
+---
+
+<section
+  aria-label="Recent sermons"
+  class="bg-burgundy-950 section-py"
+>
+  <div class="section-container">
+
+    <!-- Heading -->
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12 md:mb-16">
+      <SectionHeading
+        label="From the Pulpit"
+        heading="Recent Sermons"
+        subheading="Every Sunday, Pastor Wayne opens God's Word for whoever shows up. Catch up on what you missed — or listen again."
+        light
+        class="max-w-2xl"
+      />
+      <a
+        href="/sermons/"
+        class="flex-shrink-0 text-wheat-400 font-semibold hover:text-wheat-300 transition-colors underline-offset-2 hover:underline focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-wheat-400 whitespace-nowrap"
+      >
+        All Sermons &rarr;
+      </a>
+    </div>
+
+    <!-- Featured sermon -->
+    <div class="bg-burgundy-900 rounded-xl overflow-hidden mb-8">
+      <div class="grid grid-cols-1 lg:grid-cols-5 gap-0">
+
+        <!-- Thumbnail -->
+        <div
+          class="lg:col-span-2 relative aspect-video lg:aspect-auto min-h-[200px] bg-gradient-to-br from-burgundy-800 to-burgundy-950"
+          aria-hidden="true"
+        >
+          <img
+            src="/images/Pastor-Wayne-Bible.jpg"
+            alt="Pastor Wayne Holcomb preaching from the Bible"
+            class="absolute inset-0 w-full h-full object-cover"
+            loading="lazy"
+            decoding="async"
+          />
+          <div class="absolute inset-0 bg-burgundy-950/40"></div>
+          <!-- Play button overlay -->
+          <div class="absolute inset-0 flex items-center justify-center">
+            <div class="w-16 h-16 rounded-full bg-wheat-600/80 flex items-center justify-center backdrop-blur-sm" aria-hidden="true">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="text-warm-white ml-1">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+            </div>
+          </div>
+          <!-- Series badge -->
+          {latestSermon.series && (
+            <div class="absolute top-4 left-4">
+              <span class="eyebrow text-wheat-300 bg-burgundy-950/70 px-3 py-1 rounded-full backdrop-blur-sm text-xs">
+                {latestSermon.series}
+              </span>
+            </div>
+          )}
+        </div>
+
+        <!-- Content -->
+        <div class="lg:col-span-3 p-8 md:p-10 flex flex-col gap-4">
+          <!-- Meta -->
+          <div class="flex flex-wrap items-center gap-3">
+            <span class="eyebrow text-wheat-400">Latest Sermon</span>
+            <span class="text-burgundy-600" aria-hidden="true">&bull;</span>
+            <time datetime={latestSermon.date} class="text-burgundy-300 text-sm">
+              {formatDate(latestSermon.date)}
+            </time>
+            {latestSermon.duration && (
+              <>
+                <span class="text-burgundy-600" aria-hidden="true">&bull;</span>
+                <span class="text-burgundy-300 text-sm">{latestSermon.duration}</span>
+              </>
+            )}
+          </div>
+
+          <!-- Title -->
+          <h3 class="font-display text-2xl md:text-3xl font-bold text-warm-white leading-tight">
+            {latestSermon.title}
+          </h3>
+
+          <!-- Scripture -->
+          <p class="font-display italic text-wheat-400 text-lg">{latestSermon.scripture}</p>
+
+          <!-- Description -->
+          <p class="text-burgundy-200 leading-relaxed line-clamp-3">
+            {latestSermon.description}
+          </p>
+
+          <!-- Speaker -->
+          <p class="text-burgundy-400 text-sm">{latestSermon.speaker}</p>
+
+          <!-- CTA -->
+          <div class="flex flex-wrap gap-3 pt-2">
+            {latestSermon.youtubeId ? (
+              <Button
+                href={`https://www.youtube.com/watch?v=${latestSermon.youtubeId}`}
+                variant="secondary"
+                size="md"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <polygon points="5 3 19 12 5 21 5 3"/>
+                </svg>
+                Watch Now
+              </Button>
+            ) : (
+              <Button href="/sermons/" variant="secondary" size="md">
+                Listen &rarr;
+              </Button>
+            )}
+            <Button href="/sermons/" variant="ghost" size="md" class="text-burgundy-100 hover:bg-burgundy-800">
+              All Sermons
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Two smaller recent sermon cards -->
+    {otherSermons.length > 0 && (
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
+        {otherSermons.map((sermon) => (
+          <a
+            href={sermon.youtubeId ? `https://www.youtube.com/watch?v=${sermon.youtubeId}` : '/sermons/'}
+            class="group flex gap-5 bg-burgundy-900 rounded-lg p-6 hover:bg-burgundy-800 transition-colors focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-burgundy-500"
+            {...(sermon.youtubeId ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+          >
+            <!-- Small thumbnail -->
+            <div
+              class="w-20 h-20 flex-shrink-0 rounded-md bg-gradient-to-br from-burgundy-700 to-burgundy-900 flex items-center justify-center"
+              aria-hidden="true"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" class="text-wheat-500 group-hover:text-wheat-400 transition-colors">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+            </div>
+
+            <!-- Content -->
+            <div class="flex flex-col gap-1 min-w-0">
+              <time datetime={sermon.date} class="text-burgundy-400 text-xs">{formatDate(sermon.date)}</time>
+              <h4 class="font-display font-semibold text-warm-white text-base leading-snug group-hover:text-wheat-300 transition-colors line-clamp-2">
+                {sermon.title}
+              </h4>
+              <p class="font-display italic text-wheat-500 text-sm">{sermon.scripture}</p>
+              {sermon.duration && (
+                <p class="text-burgundy-400 text-xs">{sermon.duration}</p>
+              )}
+            </div>
+          </a>
+        ))}
+      </div>
+    )}
+
+    <!-- Bottom link -->
+    <div class="mt-10 text-center">
+      <Button href="/sermons/" variant="outline" size="md" class="border-burgundy-600 text-burgundy-200 hover:bg-burgundy-800 hover:border-burgundy-500 hover:text-warm-white">
+        Browse All Sermons
+      </Button>
+    </div>
+
+  </div>
+</section>

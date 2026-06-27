@@ -1,0 +1,106 @@
+---
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import Button from '@/components/ui/Button.astro';
+---
+
+<section
+  aria-label="The Good News — the gospel"
+  class="bg-cream section-py"
+>
+  <div class="section-container">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+
+      <!-- Left: text content -->
+      <div class="flex flex-col gap-6">
+        <!-- Cross icon -->
+        <div class="w-12 h-12 flex items-center justify-center" aria-hidden="true">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+            <rect x="17" y="4" width="6" height="32" rx="2" fill="var(--color-burgundy-800)"/>
+            <rect x="4" y="13" width="32" height="6" rx="2" fill="var(--color-burgundy-800)"/>
+          </svg>
+        </div>
+
+        <SectionHeading
+          label="Why We're Here"
+          heading="The Good News"
+          subheading="Everything we do flows from one simple, staggering truth: God loves people — all people — and He sent His Son to prove it."
+        />
+
+        <div class="flex flex-col gap-4 text-stone-700 leading-relaxed">
+          <p>
+            We believe the Bible is true, that Jesus really lived, really died, and really rose from the dead &mdash; and that this changes everything. Not just after death, but right now, in the middle of ordinary life in Elko, Georgia.
+          </p>
+          <p>
+            The gospel isn&rsquo;t a self-improvement program. It&rsquo;s not a list of rules to follow or a score to improve. It&rsquo;s a rescue. It&rsquo;s grace freely given to people who need it &mdash; which is all of us.
+          </p>
+          <p>
+            If you&rsquo;ve never heard that or never quite believed it, come and hear it for yourself. Pastor Wayne teaches it straight from the Bible every Sunday &mdash; and he&rsquo;ll be glad you came.
+          </p>
+        </div>
+
+        <div class="flex flex-wrap gap-3 pt-2">
+          <Button href="/plan-your-visit/" variant="primary" size="md">
+            Come Hear For Yourself
+          </Button>
+          <Button href="/sermons/" variant="ghost" size="md">
+            Listen to a Sermon
+          </Button>
+        </div>
+      </div>
+
+      <!-- Right: scripture feature -->
+      <div class="relative">
+        <!-- Decorative background block -->
+        <div
+          class="absolute -inset-4 md:-inset-8 bg-burgundy-900 rounded-2xl"
+          aria-hidden="true"
+        ></div>
+
+        <!-- Scripture card -->
+        <div class="relative bg-warm-white rounded-xl p-8 md:p-10 shadow-lg">
+          <!-- Decorative quotation mark -->
+          <div
+            class="absolute top-4 left-6 font-display text-8xl text-burgundy-100 leading-none select-none"
+            aria-hidden="true"
+          >&ldquo;</div>
+
+          <div class="relative pt-8">
+            <blockquote>
+              <p class="verse-text text-stone-800 text-xl md:text-2xl mb-6 leading-relaxed">
+                For God so loved the world, that he gave his only Son, that whoever believes in him should not perish but have eternal life.
+              </p>
+              <footer>
+                <cite class="not-italic">
+                  <span class="eyebrow text-wheat-700">John 3:16</span>
+                  <span class="sr-only">(ESV)</span>
+                </cite>
+              </footer>
+            </blockquote>
+
+            <!-- Divider -->
+            <div class="border-t border-stone-200 my-6" aria-hidden="true"></div>
+
+            <!-- Second verse -->
+            <blockquote>
+              <p class="font-display italic text-stone-600 text-lg leading-relaxed mb-3">
+                &ldquo;For I am sure that neither death nor life, nor angels nor rulers&hellip; nor anything else in all creation, will be able to separate us from the love of God in Christ Jesus our Lord.&rdquo;
+              </p>
+              <footer>
+                <cite class="not-italic">
+                  <span class="eyebrow text-wheat-700">Romans 8:38&ndash;39</span>
+                </cite>
+              </footer>
+            </blockquote>
+          </div>
+        </div>
+
+        <!-- Accent corner -->
+        <div
+          class="absolute -bottom-3 -right-3 w-16 h-16 bg-wheat-600 rounded-lg opacity-80"
+          aria-hidden="true"
+        ></div>
+      </div>
+
+    </div>
+  </div>
+</section>

@@ -1,0 +1,162 @@
+---
+import { siteConfig } from '@/data/site';
+
+const currentYear = new Date().getFullYear();
+
+const footerLinks = [
+  {
+    heading: 'Visit Us',
+    links: [
+      { label: 'Plan Your Visit', href: '/plan-your-visit/' },
+      { label: 'Service Times', href: '/plan-your-visit/#times' },
+      { label: 'What to Expect', href: '/plan-your-visit/#expect' },
+      { label: 'Location & Directions', href: '/contact/' },
+    ],
+  },
+  {
+    heading: 'Our Church',
+    links: [
+      { label: 'About Elko Baptist', href: '/about/' },
+      { label: 'Our Ministries', href: '/ministries/' },
+      { label: 'Meet the Staff', href: '/staff/' },
+      { label: 'Sermon Archive', href: '/sermons/' },
+    ],
+  },
+  {
+    heading: 'Connect',
+    links: [
+      { label: 'Contact Us', href: '/contact/' },
+      { label: 'Prayer Requests', href: '/prayer-requests/' },
+      { label: 'Facebook', href: siteConfig.social.facebook },
+      { label: 'YouTube / Livestream', href: siteConfig.social.youtube },
+    ],
+  },
+];
+---
+
+<footer class="bg-burgundy-950 text-burgundy-100">
+
+  <!-- Main footer grid -->
+  <div class="section-container py-16 md:py-20">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 lg:gap-8">
+
+      <!-- Brand column -->
+      <div class="lg:col-span-2 flex flex-col gap-6">
+        <a href="/" class="flex items-center gap-3 group" aria-label={`${siteConfig.name} — Home`}>
+          <span class="w-10 h-10 flex-shrink-0" aria-hidden="true">
+            <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="17" y="4" width="6" height="32" rx="1.5" fill="#f7f3eb"/>
+              <rect x="6" y="14" width="28" height="6" rx="1.5" fill="#f7f3eb"/>
+              <circle cx="20" cy="17" r="4" fill="#d9b96c" opacity="0.4"/>
+            </svg>
+          </span>
+          <div class="flex flex-col leading-none">
+            <span class="font-display font-bold text-cream text-xl group-hover:text-wheat-400 transition-colors">
+              Elko Baptist Church
+            </span>
+            <span class="font-body text-xs text-burgundy-300 tracking-wide mt-0.5">
+              Elko, Georgia · Est. 1891
+            </span>
+          </div>
+        </a>
+
+        <p class="font-body text-burgundy-200 text-base leading-relaxed max-w-sm">
+          {siteConfig.tagline}
+        </p>
+        <p class="font-body text-burgundy-300 text-sm leading-relaxed max-w-sm">
+          A warm, historic Southern Baptist congregation serving Elko, Perry, Warner Robins,
+          and all of Houston County, Georgia.
+        </p>
+
+        <!-- Social links -->
+        <div class="flex gap-3">
+          <a
+            href={siteConfig.social.facebook}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Elko Baptist Church on Facebook"
+            class="flex items-center justify-center w-10 h-10 rounded-sm bg-burgundy-800 hover:bg-wheat-700 text-burgundy-100 transition-colors focus-visible:outline-2 focus-visible:outline-wheat-400"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+            </svg>
+          </a>
+          <a
+            href={siteConfig.social.youtube}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Elko Baptist Church on YouTube (Livestream)"
+            class="flex items-center justify-center w-10 h-10 rounded-sm bg-burgundy-800 hover:bg-wheat-700 text-burgundy-100 transition-colors focus-visible:outline-2 focus-visible:outline-wheat-400"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.95A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/>
+              <polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="#5c1f2e"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Link columns -->
+      {footerLinks.map((col) => (
+        <div class="flex flex-col gap-4">
+          <h3 class="font-body font-semibold text-cream text-sm uppercase tracking-widest">
+            {col.heading}
+          </h3>
+          <ul class="flex flex-col gap-2.5" role="list">
+            {col.links.map((link) => (
+              <li>
+                <a
+                  href={link.href}
+                  class="font-body text-burgundy-300 hover:text-cream text-sm transition-colors focus-visible:outline-2 focus-visible:outline-wheat-400 rounded-sm"
+                  {...(link.href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <!-- Service times bar -->
+  <div class="border-t border-burgundy-800">
+    <div class="section-container py-6">
+      <div class="flex flex-col md:flex-row md:items-center gap-4 md:gap-8">
+        <p class="font-body font-semibold text-burgundy-300 text-xs uppercase tracking-widest flex-shrink-0">
+          Service Times
+        </p>
+        <div class="flex flex-wrap gap-x-8 gap-y-2">
+          {siteConfig.serviceTimes.map((s) => (
+            <div class="flex items-center gap-2 text-sm">
+              <span class="w-1.5 h-1.5 rounded-full bg-wheat-500 flex-shrink-0" aria-hidden="true"></span>
+              <span class="text-burgundy-200">
+                <strong class="font-semibold text-cream">{s.day}</strong>
+                {' · '}{s.name}: <strong class="font-semibold text-wheat-400">{s.time}</strong>
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contact bar -->
+  <div class="border-t border-burgundy-800">
+    <div class="section-container py-4">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 text-sm text-burgundy-400">
+        <address class="not-italic flex flex-wrap gap-x-6 gap-y-1 font-body">
+          <span>{siteConfig.contact.address.full}</span>
+          <a href={`mailto:${siteConfig.contact.email}`} class="hover:text-burgundy-200 transition-colors">
+            {siteConfig.contact.email}
+          </a>
+        </address>
+        <p class="font-body text-burgundy-500 text-xs whitespace-nowrap">
+          © {currentYear} {siteConfig.name}
+        </p>
+      </div>
+    </div>
+  </div>
+
+</footer>

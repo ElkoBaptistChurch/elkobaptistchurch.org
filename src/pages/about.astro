@@ -1,0 +1,319 @@
+---
+import BaseLayout from '@/components/layout/BaseLayout.astro';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import Button from '@/components/ui/Button.astro';
+import { siteConfig } from '@/data/site';
+import { webPageSchema } from '@/utils/seo';
+
+const pageSchema = webPageSchema({
+  title: 'About Us — Elko Baptist Church',
+  description:
+    'Learn the story of Elko Baptist Church — founded in 1891, revitalized in 2014 by Pastor Wayne and Debbie Holcomb in Elko, Georgia, Houston County.',
+  url: siteConfig.url + '/about/',
+  breadcrumbs: [{ name: 'About', url: siteConfig.url + '/about/' }],
+});
+---
+
+<BaseLayout
+  title="About Us"
+  description="Elko Baptist Church has served Houston County, Georgia since 1891. Learn our story — from nine founding members to a renewed congregation under Pastor Wayne and Debbie Holcomb in Elko, GA."
+  canonicalUrl={siteConfig.url + '/about/'}
+  schema={pageSchema}
+>
+  <!-- ============================================================
+       1. PAGE HERO
+       ============================================================ -->
+  <section
+    aria-label="About page hero"
+    class="bg-burgundy-950 relative overflow-hidden"
+  >
+    <!-- Decorative texture -->
+    <div class="absolute inset-0 opacity-5" aria-hidden="true">
+      <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--color-burgundy-700)_0%,_transparent_60%)]"></div>
+      <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--color-wheat-900)_0%,_transparent_60%)]"></div>
+    </div>
+
+    <div class="section-container relative z-10 py-20 md:py-28 lg:py-36">
+      <div class="max-w-3xl">
+        <SectionHeading
+          label="Our Story"
+          heading="A Little Church with a Long History"
+          subheading="Planted in 1891. Renewed in 2014. Still here — still faithful — right in the heart of Houston County, Georgia."
+          as="h1"
+          light={true}
+        />
+
+        <div class="mt-8 flex flex-wrap gap-4">
+          <Button href="/plan-your-visit/" variant="secondary" size="lg">
+            Plan Your Visit
+          </Button>
+          <Button href="/staff/" variant="outline" size="lg" class="border-warm-white text-warm-white hover:bg-warm-white hover:text-burgundy-900">
+            Meet Our Team
+          </Button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       2. ORIGIN STORY
+       ============================================================ -->
+  <section aria-label="Our origin story" class="bg-warm-white section-py">
+    <div class="section-container">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+        <!-- Text -->
+        <div class="flex flex-col gap-6">
+          <SectionHeading
+            label="Since 1891"
+            heading="Where It All Began"
+            as="h2"
+          />
+
+          <div class="flex flex-col gap-5 text-stone-600 text-lg leading-relaxed">
+            <p>
+              We started small. Nine people gathered in Elko, Georgia in 1891 — five men and four women — and decided to plant a church. They didn't have much. But they had faith, and they had each other. That was enough.
+            </p>
+            <p>
+              For more than a century, Elko Baptist was a steady presence in this community. Generations of families found their faith here, were married here, buried their loved ones here. The building grew older. The steeple stayed. And through it all, the church kept going.
+            </p>
+            <p>
+              Then, sometime around 2010, it went quiet. The longtime pastor, Harold Lee Moore, had passed away after years of faithful service. Without someone to lead the flock, the congregation scattered. The doors closed. For a few years, the old building on Oak Street sat empty and still.
+            </p>
+            <p>
+              Then Wayne and Debbie showed up.
+            </p>
+            <p>
+              It was August 2014. Pastor Wayne Holcomb and his wife Debbie had answered a call — the kind that doesn't let you say no — to come to Elko and see what God might do with a sleeping church. What they found when they walked in for the first time was a building full of wasps nesting in the steeple. And a collection plate still sitting on the table, with money in it. Untouched.
+            </p>
+            <p class="font-display text-xl text-burgundy-900 italic leading-relaxed">
+              "That felt like a promise to us. Like God was saying: I'm not done with this place."
+            </p>
+            <p>
+              They stayed. They cleaned. They prayed. And slowly, one family at a time, Elko Baptist came back to life. Today, we're a small but growing congregation — warm, genuine, and deeply rooted in this community we've called home for over 130 years.
+            </p>
+          </div>
+        </div>
+
+        <!-- Photo placeholder -->
+        <div class="flex flex-col gap-6">
+          <div
+            class="relative aspect-[4/3] rounded-lg overflow-hidden shadow-xl"
+          >
+            <img
+              src="/images/Church-outside.jpg"
+              alt="Elko Baptist Church building exterior, with its white siding and steeple, in Elko, Georgia"
+              class="absolute inset-0 w-full h-full object-cover"
+              loading="lazy"
+              decoding="async"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-burgundy-950/85 via-burgundy-950/10 to-transparent"></div>
+            <div class="absolute bottom-4 left-4 right-4">
+              <p class="text-warm-white text-sm font-body text-center drop-shadow">Historic church building — Elko, GA, est. 1891</p>
+            </div>
+          </div>
+
+          <div
+            class="relative aspect-[4/3] rounded-lg overflow-hidden shadow-xl"
+          >
+            <img
+              src="/images/wayne-debbie-holcomb.png"
+              alt="Pastor Wayne and Debbie Holcomb sitting together on the church steps"
+              class="absolute inset-0 w-full h-full object-cover"
+              loading="lazy"
+              decoding="async"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-burgundy-950/85 via-burgundy-950/10 to-transparent"></div>
+            <div class="absolute bottom-4 left-4 right-4">
+              <p class="text-warm-white text-sm font-body text-center drop-shadow">Pastor Wayne &amp; Debbie Holcomb — since 2014</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       3. SCRIPTURE / MISSION
+       ============================================================ -->
+  <section aria-label="Our mission and scripture" class="bg-parchment section-py">
+    <div class="section-container">
+      <div class="max-w-3xl mx-auto text-center flex flex-col items-center gap-8">
+        <span class="eyebrow text-wheat-700">Our Mission</span>
+
+        <blockquote class="verse-text text-stone-700">
+          "Go therefore and make disciples of all nations, baptizing them in the name of the Father and of the Son and of the Holy Spirit, teaching them to observe all that I have commanded you."
+        </blockquote>
+        <cite class="text-sm text-stone-500 font-body not-italic">— Matthew 28:19–20</cite>
+
+        <span class="section-rule bg-wheat-600 mx-auto" aria-hidden="true"></span>
+
+        <p class="text-lg md:text-xl text-stone-700 leading-relaxed font-body">
+          We exist to <strong class="text-burgundy-900 font-semibold">love God</strong>, <strong class="text-burgundy-900 font-semibold">love people</strong>, and <strong class="text-burgundy-900 font-semibold">make disciples</strong> — right here in Houston County, Georgia. Not someday, somewhere else. Here. Now. With the neighbors and families God has placed in our path.
+        </p>
+
+        <p class="text-base text-stone-600 leading-relaxed max-w-2xl">
+          That's the whole thing. Simple, maybe. But it's kept churches faithful for two thousand years — and it's what gets us out of bed on Sunday morning in Elko.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       4. VALUES
+       ============================================================ -->
+  <section aria-label="Our values" class="bg-cream section-py">
+    <div class="section-container">
+      <SectionHeading
+        label="What We Believe In"
+        heading="Our Core Values"
+        subheading="Not a list of rules — just a description of who we're trying to be."
+        centered={true}
+        as="h2"
+        class="mb-14"
+      />
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Value: Scripture-Centered -->
+        <div class="rounded-lg bg-warm-white border border-stone-200 p-8 flex flex-col gap-4">
+          <div class="w-12 h-12 rounded-full bg-burgundy-100 flex items-center justify-center">
+            <svg class="w-6 h-6 text-burgundy-800" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+          </div>
+          <h3 class="font-display text-xl font-bold text-stone-900">Whole Bible Believers</h3>
+          <p class="text-stone-600 text-base leading-relaxed">
+            We're Whole Bible Believers — we believe in teaching the <em>whole</em> Bible, not just the comfortable parts. The Bible is our anchor. Every sermon, every class, every conversation — we come back to the Word, from Genesis to Revelation. Not because we have all the answers, but because we believe God does.
+          </p>
+        </div>
+
+        <!-- Value: Welcoming to All -->
+        <div class="rounded-lg bg-warm-white border border-stone-200 p-8 flex flex-col gap-4">
+          <div class="w-12 h-12 rounded-full bg-wheat-100 flex items-center justify-center">
+            <svg class="w-6 h-6 text-wheat-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+          </div>
+          <h3 class="font-display text-xl font-bold text-stone-900">Welcoming to All</h3>
+          <p class="text-stone-600 text-base leading-relaxed">
+            Our tagline isn't just a slogan: <em>"Where Everybody is Somebody in His Body."</em> That means you walk in and you belong — whether you're a lifelong Baptist or someone who hasn't set foot in a church in twenty years. Whether you have it all together or you're barely holding on. There's room here.
+          </p>
+        </div>
+
+        <!-- Value: Community-Rooted -->
+        <div class="rounded-lg bg-warm-white border border-stone-200 p-8 flex flex-col gap-4">
+          <div class="w-12 h-12 rounded-full bg-burgundy-100 flex items-center justify-center">
+            <svg class="w-6 h-6 text-burgundy-800" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h3 class="font-display text-xl font-bold text-stone-900">Community-Rooted</h3>
+          <p class="text-stone-600 text-base leading-relaxed">
+            Elko Baptist has been part of Houston County for over 130 years. We're not just passing through. We know these roads, these families, these struggles. We believe God planted us here on purpose — and we take that seriously when it comes to loving our neighbors.
+          </p>
+        </div>
+
+        <!-- Value: Authentic Worship -->
+        <div class="rounded-lg bg-warm-white border border-stone-200 p-8 flex flex-col gap-4">
+          <div class="w-12 h-12 rounded-full bg-wheat-100 flex items-center justify-center">
+            <svg class="w-6 h-6 text-wheat-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+            </svg>
+          </div>
+          <h3 class="font-display text-xl font-bold text-stone-900">Authentic Worship</h3>
+          <p class="text-stone-600 text-base leading-relaxed">
+            There is a freedom to worship here. Our Sunday worship is acoustic — guitar, mandolin, piano — and utterly genuine. We're not trying to put on a show. We're trying to help everyone in that room take one more step toward God. Hymns that have carried the church for centuries sit alongside songs written in our own time, woven together in a sound that's uniquely ours.
+          </p>
+        </div>
+
+        <!-- Value: Spirit-Filled & Fruitful -->
+        <div class="rounded-lg bg-warm-white border border-stone-200 p-8 flex flex-col gap-4">
+          <div class="w-12 h-12 rounded-full bg-burgundy-100 flex items-center justify-center">
+            <svg class="w-6 h-6 text-burgundy-800" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.657 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9.879 16.121A3 3 0 1012.015 11L11 14h2" />
+            </svg>
+          </div>
+          <h3 class="font-display text-xl font-bold text-stone-900">Spirit-Filled &amp; Fruitful</h3>
+          <p class="text-stone-600 text-base leading-relaxed">
+            We strive to teach the <em>whole</em> Bible — including what it says about the Holy Spirit. We believe a Christian's life should bear the spiritual fruit described in Galatians 5:22&ndash;23 &mdash; love, joy, peace, patience, kindness, goodness, faithfulness, gentleness, and self-control &mdash; and that every believer should be desirous to receive the gifts of the Spirit described in 1 Corinthians 12:7&ndash;11. Whether you're part of our church family or visiting online, we're glad you're here.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       5. HERITAGE NOTE
+       ============================================================ -->
+  <section aria-label="Our historic building and heritage" class="bg-burgundy-950 section-py relative overflow-hidden">
+    <div class="absolute inset-0 opacity-5" aria-hidden="true">
+      <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--color-burgundy-700)_0%,_transparent_70%)]"></div>
+    </div>
+
+    <div class="section-container relative z-10">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+        <!-- Sanctuary interior photo -->
+        <div class="relative aspect-[4/3] rounded-lg overflow-hidden shadow-2xl border border-burgundy-800">
+          <img
+            src="/images/music-ministry-2.jpg"
+            alt="Inside the Elko Baptist Church sanctuary during worship, with the congregation and worship team gathered beneath the cross"
+            class="absolute inset-0 w-full h-full object-cover"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+
+        <!-- Text -->
+        <div class="flex flex-col gap-6">
+          <span class="eyebrow text-wheat-400">A Building Worth Preserving</span>
+          <h2 class="font-display text-3xl md:text-4xl font-bold text-warm-white leading-tight">
+            Standing Since 1891
+          </h2>
+          <span class="section-rule bg-wheat-400" aria-hidden="true"></span>
+
+          <div class="flex flex-col gap-4 text-burgundy-100 text-lg leading-relaxed">
+            <p>
+              The building you'll walk into on Sunday morning has been standing for over 130 years. The steeple still rises above the Georgia pines. The wooden pews have held generations of families. The sanctuary has echoed with hymns, prayers, heartbreak, and joy beyond measure.
+            </p>
+            <p>
+              When Pastor Wayne and Debbie began the work of revitalization in 2014, they made a deliberate choice: honor what came before. The restoration was done carefully — preserving the character and history of a building that has meant so much to so many people over so many years.
+            </p>
+            <p>
+              We think of it this way: those nine founding members built something that outlasted them. That's a kind of faith worth respecting.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       6. CTA
+       ============================================================ -->
+  <section aria-label="Visit us and meet our team" class="bg-parchment section-py">
+    <div class="section-container">
+      <div class="max-w-2xl mx-auto text-center flex flex-col items-center gap-8">
+        <SectionHeading
+          label="Come See Us"
+          heading="We'd Love to Meet You"
+          subheading="You don't need to have everything figured out before you walk through our doors. Nobody here does. Come as you are."
+          centered={true}
+          as="h2"
+        />
+
+        <div class="flex flex-wrap gap-4 justify-center">
+          <Button href="/plan-your-visit/" variant="primary" size="lg">
+            Plan Your Visit
+          </Button>
+          <Button href="/staff/" variant="outline" size="lg">
+            Meet Our Staff
+          </Button>
+        </div>
+
+        <p class="text-stone-500 text-sm">
+          Morning Worship at 11:00 AM &bull; Children's Church at 11:30 AM &bull; {siteConfig.contact.address.full}
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

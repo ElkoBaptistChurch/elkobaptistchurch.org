@@ -1,0 +1,42 @@
+---
+interface Props {
+  label?: string;
+  heading: string;
+  subheading?: string;
+  centered?: boolean;
+  light?: boolean;
+  as?: 'h1' | 'h2' | 'h3';
+  class?: string;
+}
+
+const {
+  label,
+  heading,
+  subheading,
+  centered = false,
+  light = false,
+  as: Tag = 'h2',
+  class: className = '',
+} = Astro.props;
+
+const alignment = centered ? 'text-center items-center' : 'text-left items-start';
+const textColor = light ? 'text-warm-white' : 'text-stone-900';
+const subColor = light ? 'text-burgundy-100' : 'text-stone-600';
+const labelColor = light ? 'text-wheat-400' : 'text-wheat-700';
+const ruleColor = light ? 'bg-wheat-400' : 'bg-wheat-600';
+---
+
+<div class={`flex flex-col gap-3 ${alignment} ${className}`}>
+  {label && (
+    <span class={`eyebrow ${labelColor}`}>{label}</span>
+  )}
+  <Tag class={`font-display text-3xl md:text-4xl lg:text-5xl font-bold leading-tight ${textColor}`}>
+    {heading}
+  </Tag>
+  {label && <span class={`section-rule ${ruleColor}`} aria-hidden="true" />}
+  {subheading && (
+    <p class={`text-lg md:text-xl leading-relaxed max-w-2xl ${subColor}`}>
+      {subheading}
+    </p>
+  )}
+</div>

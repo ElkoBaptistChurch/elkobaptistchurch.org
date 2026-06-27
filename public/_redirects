@@ -1,0 +1,8 @@
+# Cloudflare Pages redirect rules
+# 404 fallback handled by Astro's 404.astro
+
+# Friendly URL aliases
+/watch          https://www.youtube.com/c/ElkoBaptistChurch    302
+/facebook       https://www.facebook.com/ElkoBaptistChurchGA/  302
+/livestream     https://www.youtube.com/c/ElkoBaptistChurch    302
+/give           /contact/                                       302

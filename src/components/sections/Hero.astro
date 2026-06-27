@@ -1,0 +1,105 @@
+---
+import { siteConfig } from '@/data/site';
+import Button from '@/components/ui/Button.astro';
+---
+
+<section
+  aria-label="Welcome to Elko Baptist Church"
+  class="relative min-h-[85vh] flex items-center justify-center overflow-hidden"
+>
+  <!-- Background: church exterior photo with burgundy overlay -->
+  <div
+    class="absolute inset-0 bg-gradient-to-br from-burgundy-950 via-burgundy-900 to-burgundy-800"
+    aria-hidden="true"
+  >
+    <img
+      src="/images/Church-outside.jpg"
+      alt="Elko Baptist Church building exterior in Elko, Georgia"
+      class="absolute inset-0 w-full h-full object-cover"
+    />
+    <!-- Burgundy color wash for text contrast -->
+    <div class="absolute inset-0 bg-gradient-to-br from-burgundy-950/85 via-burgundy-900/80 to-burgundy-800/75"></div>
+    <!-- Subtle texture overlay -->
+    <div class="absolute inset-0 opacity-20 bg-[radial-gradient(ellipse_at_top_right,_var(--color-wheat-800)_0%,_transparent_60%)]"></div>
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_rgba(12,31,15,0.8)_0%,_transparent_70%)]"></div>
+  </div>
+
+  <!-- Content -->
+  <div class="relative z-10 section-container w-full py-24 md:py-32">
+    <div class="max-w-3xl mx-auto text-center">
+
+      <!-- Eyebrow -->
+      <p class="eyebrow text-wheat-400 mb-6 animate-fade-in">
+        Elko, Georgia &mdash; Since 1891
+      </p>
+
+      <!-- Main heading -->
+      <h1 class="font-display text-5xl md:text-6xl lg:text-7xl font-bold text-warm-white leading-tight mb-6">
+        You Belong Here.
+      </h1>
+
+      <!-- Subheadline -->
+      <p class="text-lg md:text-xl text-burgundy-100 leading-relaxed mb-4 max-w-2xl mx-auto">
+        For over 130 years, this little church in Elko, Georgia has been a place
+        where ordinary people find extraordinary grace.
+      </p>
+      <p class="text-lg md:text-xl text-burgundy-100 leading-relaxed mb-10 max-w-2xl mx-auto">
+        Whether it&rsquo;s your first Sunday or your hundredth, you&rsquo;ll find a family here.
+      </p>
+
+      <!-- Service time pills -->
+      <div class="flex flex-wrap justify-center gap-3 mb-10" role="list" aria-label="Service times">
+        {siteConfig.serviceTimes.map((service) => (
+          <div
+            role="listitem"
+            class="inline-flex items-center gap-2 bg-burgundy-800/70 border border-burgundy-700/60 text-burgundy-100 rounded-full px-4 py-2 text-sm font-body font-medium backdrop-blur-sm"
+          >
+            <span class="w-1.5 h-1.5 rounded-full bg-wheat-400 flex-shrink-0" aria-hidden="true"></span>
+            <span class="font-semibold text-warm-white">{service.day}</span>
+            <span class="text-burgundy-200">{service.time}</span>
+            <span class="text-burgundy-300 hidden sm:inline">&mdash; {service.name}</span>
+          </div>
+        ))}
+      </div>
+
+      <!-- CTAs -->
+      <div class="flex flex-col items-center">
+        <Button href="/plan-your-visit/" variant="secondary" size="lg">
+          Plan Your Visit
+        </Button>
+        <div class="w-12 h-px bg-warm-white/20 my-5" aria-hidden="true"></div>
+        <Button
+          href={siteConfig.social.youtube}
+          variant="outline"
+          size="sm"
+          class="border-warm-white/40 text-warm-white/80 hover:bg-warm-white/10 hover:border-warm-white hover:text-warm-white"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Watch Online
+        </Button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom fade to cream -->
+  <div
+    class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-cream to-transparent"
+    aria-hidden="true"
+  ></div>
+</section>
+
+<style>
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fade-in {
+    animation: fade-in 0.8s ease both;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .animate-fade-in {
+      animation: none;
+    }
+  }
+</style>

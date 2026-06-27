@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-label="Elko Baptist Church logo">
+  <title>Elko Baptist Church</title>
+  <desc>Circular emblem for Elko Baptist Church, established 1890, revived 2014</desc>
+
+  <!--
+    LIGHT VERSION — warm white on transparent
+    Primary: #FEFCF9  |  Accent: #C5A45A
+    Use on: deep burgundy / wine / charcoal backgrounds
+  -->
+
+  <!-- ══ Double ring border ══ -->
+  <circle cx="200" cy="200" r="175" fill="none" stroke="#FEFCF9" stroke-width="1.5"/>
+  <circle cx="200" cy="200" r="167" fill="none" stroke="#FEFCF9" stroke-width="1"/>
+
+  <!-- ══ Church silhouette — outline style ══
+       Larger building to fill the top quarter of the circle.
+       Single connected exterior path + separate cross lines.
+
+       Geometry:
+         Nave:          x=158–242 (84px wide), y=100–132
+         Roof:          peak (200,87), eaves y=100
+         Steeple tower: x=192–208 (16px), y=79–90
+         Spire:         base (194,79)(206,79) → tip (200,62)
+         Cross:         vertical y=40–63, horizontal y=49
+
+       Roof–steeple junction (right side):
+         Slope (242,100)→(200,87): at x=208, y≈90
+  -->
+  <g stroke="#FEFCF9" fill="none" stroke-linejoin="miter" stroke-linecap="square">
+
+    <path stroke-width="1.5" d="
+      M 158,132
+      L 242,132
+      L 242,100
+      L 208,90
+      L 208,79
+      L 206,79
+      L 200,62
+      L 194,79
+      L 192,79
+      L 192,90
+      L 158,100
+      Z
+    "/>
+
+    <!-- Cross: vertical -->
+    <line stroke-width="1.5" x1="200" y1="40" x2="200" y2="63"/>
+    <!-- Cross: horizontal -->
+    <line stroke-width="1.5" x1="191" y1="49" x2="209" y2="49"/>
+
+    <!-- Door arch -->
+    <path stroke-width="1.2" d="M 193,132 L 193,122 A 7,8 0 0 1 207,122 L 207,132"/>
+
+  </g>
+
+  <!-- ══ ELKO  (10px gap below church; cap-top ≈ y=142) ══ -->
+  <text
+    x="200" y="178"
+    font-family="'Playfair Display', Georgia, serif"
+    font-size="50"
+    font-weight="700"
+    letter-spacing="8"
+    text-anchor="middle"
+    fill="#FEFCF9"
+  >ELKO</text>
+
+  <!-- ══ BAPTIST CHURCH ══ -->
+  <text
+    x="200" y="195"
+    font-family="'Playfair Display', Georgia, serif"
+    font-size="14.5"
+    font-weight="400"
+    letter-spacing="5"
+    text-anchor="middle"
+    fill="#FEFCF9"
+  >BAPTIST CHURCH</text>
+
+  <!-- ══ Divider ══ -->
+  <line x1="142" y1="205" x2="258" y2="205" stroke="#FEFCF9" stroke-width="0.75"/>
+
+  <!-- ══ ESTABLISHED 1890 · REVIVED 2014 ══ -->
+  <text
+    x="200" y="215"
+    font-family="'Playfair Display', Georgia, serif"
+    font-size="9"
+    font-weight="400"
+    letter-spacing="2"
+    text-anchor="middle"
+    fill="#FEFCF9"
+  >ESTABLISHED 1890  ·  REVIVED 2014</text>
+
+  <!-- ══ Compass rose — 8-pointed star ══
+       Center: (200, 244)
+       Outer radius 13 (N/NE/E/SE/S/SW/W/NW), inner radius 5
+       16 alternating points starting from N, clockwise
+  -->
+  <g fill="#C5A45A" aria-hidden="true">
+    <polygon points="
+      200,231
+      202,239  209,235  205,242
+      213,244
+      205,246  209,253  202,249
+      200,257
+      198,249  191,253  195,246
+      187,244
+      195,242  191,235  198,239
+    "/>
+    <circle cx="200" cy="244" r="2.5"/>
+  </g>
+
+</svg>

@@ -1,0 +1,93 @@
+---
+import { siteConfig } from '@/data/site';
+import Button from '@/components/ui/Button.astro';
+---
+
+<section
+  aria-label="Plan your visit — call to action"
+  class="bg-burgundy-900 section-py relative overflow-hidden"
+>
+  <!-- Wheat accent bar top -->
+  <div class="absolute top-0 left-0 right-0 h-1 bg-wheat-600" aria-hidden="true"></div>
+
+  <!-- Decorative background shapes -->
+  <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+    <div class="absolute top-0 right-0 w-96 h-96 bg-burgundy-800 rounded-full translate-x-1/2 -translate-y-1/2 opacity-50"></div>
+    <div class="absolute bottom-0 left-0 w-72 h-72 bg-burgundy-950 rounded-full -translate-x-1/3 translate-y-1/3 opacity-60"></div>
+  </div>
+
+  <div class="relative section-container">
+    <div class="max-w-3xl mx-auto text-center flex flex-col gap-6 items-center">
+
+      <!-- Eyebrow -->
+      <p class="eyebrow text-wheat-400">You Are Welcome Here</p>
+
+      <!-- Heading -->
+      <h2 class="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-warm-white leading-tight">
+        Come As You Are.<br class="hidden sm:block" />
+        Stay As Long As You Like.
+      </h2>
+
+      <!-- Subheading -->
+      <p class="text-burgundy-200 text-lg md:text-xl leading-relaxed max-w-xl">
+        No dress code. No membership required. Just people who love God and love each other &mdash; and a seat with your name on it.
+      </p>
+
+      <!-- Service times summary -->
+      <div
+        class="bg-burgundy-800/60 border border-burgundy-700/60 rounded-xl px-8 py-6 w-full max-w-lg backdrop-blur-sm"
+        role="region"
+        aria-label="Service schedule"
+      >
+        <p class="eyebrow text-wheat-500 mb-4 text-center">Join us this week</p>
+        <ul class="flex flex-col gap-3" role="list">
+          {siteConfig.serviceTimes.map((service) => (
+            <li class="flex items-center justify-between gap-4" role="listitem">
+              <div class="flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-wheat-500 flex-shrink-0" aria-hidden="true"></span>
+                <span class="text-warm-white font-semibold">{service.name}</span>
+              </div>
+              <span class="text-burgundy-200 font-medium">{service.day} &bull; {service.time}</span>
+            </li>
+          ))}
+        </ul>
+        <div class="border-t border-burgundy-700 mt-4 pt-4">
+          <p class="text-burgundy-300 text-sm text-center">
+            <svg class="inline-block w-4 h-4 mr-1.5 align-middle text-burgundy-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+            {siteConfig.contact.address.full}
+          </p>
+        </div>
+      </div>
+
+      <!-- CTAs -->
+      <div class="flex flex-col sm:flex-row gap-4 justify-center items-center pt-2">
+        <Button href="/plan-your-visit/" variant="secondary" size="lg">
+          Plan Your Visit
+        </Button>
+        <Button
+          href={siteConfig.contact.mapsUrl}
+          variant="outline"
+          size="lg"
+          class="border-warm-white/40 text-warm-white hover:bg-warm-white/10 hover:border-warm-white/70"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Get Directions
+          <span class="sr-only">(opens in Google Maps)</span>
+        </Button>
+      </div>
+
+      <!-- Tagline -->
+      <p class="text-burgundy-400 text-sm font-display italic mt-2">
+        &ldquo;{siteConfig.tagline}&rdquo;
+      </p>
+
+    </div>
+  </div>
+
+  <!-- Wheat accent bar bottom -->
+  <div class="absolute bottom-0 left-0 right-0 h-1 bg-wheat-600/40" aria-hidden="true"></div>
+</section>

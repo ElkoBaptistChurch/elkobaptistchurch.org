@@ -1,0 +1,30 @@
+---
+import BaseLayout from '@/components/layout/BaseLayout.astro';
+import Hero from '@/components/sections/Hero.astro';
+import NewHereSection from '@/components/sections/NewHereSection.astro';
+import ServiceTimesBar from '@/components/sections/ServiceTimesBar.astro';
+import MinistriesGrid from '@/components/sections/MinistriesGrid.astro';
+import GospelSection from '@/components/sections/GospelSection.astro';
+import SermonsPreview from '@/components/sections/SermonsPreview.astro';
+import VideoSection from '@/components/sections/VideoSection.astro';
+import VisitCTA from '@/components/sections/VisitCTA.astro';
+import { localBusinessSchema } from '@/utils/seo';
+
+const description =
+  'Elko Baptist Church is a warm, historic congregation in Elko, GA, Houston County, since 1891. Join us Sundays at 11 AM for Worship and Children\'s Church.';
+---
+
+<BaseLayout
+  title="Home"
+  description={description}
+  schema={localBusinessSchema()}
+>
+  <Hero />
+  <NewHereSection />
+  <ServiceTimesBar />
+  <MinistriesGrid />
+  <GospelSection />
+  <SermonsPreview />
+  <VideoSection />
+  <VisitCTA />
+</BaseLayout>

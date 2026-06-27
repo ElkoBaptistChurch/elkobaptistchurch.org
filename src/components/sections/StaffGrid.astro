@@ -1,0 +1,24 @@
+---
+import type { StaffMember } from '@/data/staff';
+import StaffCard from '@/components/ui/StaffCard.astro';
+
+interface Props {
+  members: StaffMember[];
+}
+
+const { members } = Astro.props;
+---
+
+<section aria-label="Meet the Team">
+  <div class="section-container section-py">
+    <!-- Eyebrow -->
+    <p class="eyebrow text-wheat-700 mb-6">Meet the Team</p>
+
+    <!-- Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {members.map((member) => (
+        <StaffCard member={member} />
+      ))}
+    </div>
+  </div>
+</section>

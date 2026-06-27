@@ -1,0 +1,138 @@
+---
+import BaseLayout from '@/components/layout/BaseLayout.astro';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import Button from '@/components/ui/Button.astro';
+import StaffGrid from '@/components/sections/StaffGrid.astro';
+import { siteConfig } from '@/data/site';
+import { staffMembers } from '@/data/staff';
+import { webPageSchema } from '@/utils/seo';
+
+const pageSchema = webPageSchema({
+  title: 'Our Staff — Elko Baptist Church',
+  description:
+    'Meet Pastor Wayne Holcomb and the team at Elko Baptist Church in Elko, Georgia, Houston County.',
+  url: siteConfig.url + '/staff/',
+  breadcrumbs: [{ name: 'Staff', url: siteConfig.url + '/staff/' }],
+});
+---
+
+<BaseLayout
+  title="Our Staff"
+  description="Meet the people who shepherd Elko Baptist Church — Pastor Wayne Holcomb, our worship team, and the church family serving Elko, GA in Houston County."
+  canonicalUrl={siteConfig.url + '/staff/'}
+  schema={pageSchema}
+>
+  <!-- ============================================================
+       1. PAGE HERO
+       ============================================================ -->
+  <section aria-label="Staff page hero" class="bg-burgundy-950 relative overflow-hidden">
+    <div class="absolute inset-0 opacity-5" aria-hidden="true">
+      <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--color-burgundy-700)_0%,_transparent_60%)]"></div>
+      <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_var(--color-wheat-900)_0%,_transparent_60%)]"></div>
+    </div>
+
+    <div class="section-container relative z-10 py-20 md:py-28 lg:py-36">
+      <div class="max-w-3xl">
+        <SectionHeading
+          label="The People Behind the Ministry"
+          heading="Meet Our Team"
+          subheading="Real people, genuinely called. Every person on our team is here because they believe this little church in Elko, Georgia matters — and they've given their lives to prove it."
+          as="h1"
+          light={true}
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       2. STAFF GRID
+       ============================================================ -->
+  <div class="bg-cream">
+    <StaffGrid members={staffMembers} />
+  </div>
+
+  <!-- ============================================================
+       3. PASTORAL LETTER
+       ============================================================ -->
+  <section aria-label="Letter from Pastor Wayne" class="bg-parchment section-py">
+    <div class="section-container">
+      <div class="max-w-2xl mx-auto">
+        <span class="eyebrow text-wheat-700 block mb-6">A Word from the Pastor</span>
+
+        <!-- Letter card -->
+        <div class="bg-warm-white rounded-lg border border-stone-200 p-8 md:p-12 shadow-sm relative">
+          <!-- Decorative quote mark -->
+          <div class="absolute top-6 left-8 text-wheat-200 select-none" aria-hidden="true">
+            <svg class="w-12 h-12" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+            </svg>
+          </div>
+
+          <div class="flex flex-col gap-6 text-stone-700 text-lg leading-relaxed pt-6">
+            <p>
+              If you're reading this, I want you to know something: you matter. Not to us as a number or as a seat to fill — but as a person created in the image of God, loved by Him before you ever thought to look for Him.
+            </p>
+            <p>
+              Debbie and I came to Elko in 2014 because we felt called here. I won't pretend it was glamorous. The building needed work. The congregation was scattered. But there was something in this place — a faithfulness left behind by over a hundred years of people who had prayed and sung and wept and believed right here — and we couldn't walk away from it.
+            </p>
+            <p>
+              Years later, that's still what gets us up on Sunday morning. Not a program or a strategy. People. Families trying to hold it together. Kids growing up with more questions than answers. Men and women looking for something real in a world that keeps offering substitutes.
+            </p>
+            <p>
+              We're not perfect. We don't have all the answers. But we know the One who does — and we'd love for you to come meet Him with us.
+            </p>
+            <p>
+              The door is open. It always has been.
+            </p>
+          </div>
+
+          <!-- Signature area -->
+          <div class="mt-8 pt-8 border-t border-stone-200 flex items-center gap-4">
+            <div
+              class="w-14 h-14 rounded-full overflow-hidden flex-shrink-0"
+            >
+              <img
+                src="/images/Wayne-John3-16-Staff.jpg"
+                alt="Pastor Wayne Holcomb"
+                class="w-full h-full object-cover object-top"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <div>
+              <p class="font-display text-lg font-bold text-stone-900">Pastor Wayne Holcomb</p>
+              <p class="text-stone-500 text-sm">Senior Pastor, Elko Baptist Church</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       4. JOIN US CTA
+       ============================================================ -->
+  <section aria-label="Get connected" class="bg-burgundy-900 section-py">
+    <div class="section-container">
+      <div class="max-w-2xl mx-auto text-center flex flex-col items-center gap-8">
+        <SectionHeading
+          label="Get Connected"
+          heading="Ready to Take the Next Step?"
+          subheading="Whether you're looking for a church home or just want to learn more, we're here. Come on a Sunday — or reach out any time."
+          centered={true}
+          light={true}
+          as="h2"
+        />
+
+        <div class="flex flex-wrap gap-4 justify-center">
+          <Button href="/plan-your-visit/" variant="secondary" size="lg">
+            Plan Your Visit
+          </Button>
+          <Button href="/contact/" variant="outline" size="lg" class="border-burgundy-300 text-burgundy-100 hover:bg-burgundy-800">
+            Contact Us
+          </Button>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
