@@ -14,6 +14,21 @@ const pageSchema = webPageSchema({
   url: siteConfig.url + '/staff/',
   breadcrumbs: [{ name: 'Staff', url: siteConfig.url + '/staff/' }],
 });
+
+// The everyday folks you'll find in the pews
+const congregationRoles = [
+  'Farmers',
+  'Teachers',
+  'Builders & Construction',
+  'Mechanics',
+  'Nurses',
+  'Electricians',
+  'Retirees',
+  'Children — Pre-K to College',
+];
+
+// Where our church family drives in from across Middle Georgia
+const congregationTowns = ['Elko', 'Hawkinsville', 'Perry', 'Warner Robins', 'Macon'];
 ---
 
 <BaseLayout
@@ -52,7 +67,85 @@ const pageSchema = webPageSchema({
   </div>
 
   <!-- ============================================================
-       3. PASTORAL LETTER
+       3. OUR CONGREGATION
+       ============================================================ -->
+  <section aria-label="Our congregation" class="bg-cream pb-16 md:pb-20 lg:pb-24">
+    <div class="section-container">
+      <article class="rounded-lg border border-stone-200 bg-warm-white overflow-hidden grid lg:grid-cols-5">
+        <!-- Media: matted collage of three congregation photos -->
+        <div class="lg:col-span-2 grid grid-cols-2 grid-rows-[1.4fr_1fr] gap-1 bg-burgundy-950 min-h-[20rem] lg:min-h-full">
+          <img
+            src="/images/congegration.jpg"
+            alt="The Elko Baptist congregation standing and clapping together during a Sunday worship service"
+            class="col-span-2 w-full h-full object-cover"
+            loading="lazy"
+            decoding="async"
+          />
+          <img
+            src="/images/church-children-2.jpg"
+            alt="Children and teenagers from the church gathered up front during a service"
+            class="w-full h-full object-cover object-top"
+            loading="lazy"
+            decoding="async"
+          />
+          <img
+            src="/images/congegration-2.png"
+            alt="Church family sharing a fellowship meal together around long tables"
+            class="w-full h-full object-cover"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+
+        <!-- Content -->
+        <div class="lg:col-span-3 p-8 md:p-10 lg:p-12 flex flex-col gap-6">
+          <div>
+            <p class="eyebrow text-wheat-700 mb-3">Our Church Family</p>
+            <h2 class="font-display text-3xl md:text-4xl font-bold text-burgundy-950 leading-tight">
+              Our Congregation
+            </h2>
+            <p class="text-stone-500 text-lg mt-2">Everybody is Somebody in His Body</p>
+          </div>
+
+          <div class="flex flex-col gap-4 text-stone-700 text-lg leading-relaxed">
+            <p>
+              Look around on a Sunday morning and you'll see a little bit of everybody — farmers and teachers, builders and electricians, mechanics and nurses. You'll find retirees who've seen it all, and children, from Pre-K all the way to college, still figuring out who God made them to be.
+            </p>
+            <p>
+              Some have been here for decades. Some walked through the door for the very first time last Sunday. Every one of them belongs.
+            </p>
+          </div>
+
+          <!-- Occupation chips -->
+          <ul class="flex flex-wrap gap-2.5" aria-label="Occupations represented in our congregation">
+            {congregationRoles.map((role) => (
+              <li class="rounded-full bg-burgundy-50 border border-burgundy-100 text-burgundy-900 px-3.5 py-1.5 text-sm font-medium">
+                {role}
+              </li>
+            ))}
+          </ul>
+
+          <!-- Where we come from -->
+          <div class="pt-6 border-t border-stone-200">
+            <span class="eyebrow text-wheat-700 block mb-3">Where We Come From</span>
+            <p class="text-stone-700 leading-relaxed mb-4">
+              Our church family doesn't all live down the road. Folks drive in from all over Middle Georgia to worship here:
+            </p>
+            <ul class="flex flex-wrap gap-2.5" aria-label="Towns our members come from">
+              {congregationTowns.map((town) => (
+                <li class="rounded-full bg-wheat-500/20 border border-wheat-500/40 text-wheat-900 px-3.5 py-1.5 text-sm font-semibold">
+                  {town}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       4. PASTORAL LETTER
        ============================================================ -->
   <section aria-label="Letter from Pastor Wayne" class="bg-parchment section-py">
     <div class="section-container">
@@ -92,7 +185,7 @@ const pageSchema = webPageSchema({
               class="w-14 h-14 rounded-full overflow-hidden flex-shrink-0"
             >
               <img
-                src="/images/Wayne-John3-16-Staff.jpg"
+                src="/images/pastor_headshot.jpg"
                 alt="Pastor Wayne Holcomb"
                 class="w-full h-full object-cover object-top"
                 loading="lazy"
@@ -110,7 +203,7 @@ const pageSchema = webPageSchema({
   </section>
 
   <!-- ============================================================
-       4. JOIN US CTA
+       5. JOIN US CTA
        ============================================================ -->
   <section aria-label="Get connected" class="bg-burgundy-900 section-py">
     <div class="section-container">
