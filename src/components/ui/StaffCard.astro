@@ -7,6 +7,7 @@ interface Props {
     bio: string;
     email?: string;
     image?: string | null;
+    collage?: { src: string; alt: string }[];
   };
 }
 
@@ -18,9 +19,30 @@ const { member } = Astro.props;
   <div
     class="relative w-full bg-gradient-to-br from-burgundy-800 to-burgundy-950 overflow-hidden"
     style="aspect-ratio: 3/4;"
-    data-photo-needed={`Portrait photo of ${member.name}, ${member.title}`}
+    data-photo-needed={member.image || member.collage?.length ? undefined : `Portrait photo of ${member.name}, ${member.title}`}
   >
-    {member.image ? (
+    {member.collage && member.collage.length > 0 ? (
+      <div class="absolute inset-0 grid grid-cols-2 grid-rows-[1.6fr_1fr] gap-1 bg-burgundy-950">
+        {/* Wide banner — the whole worship moment */}
+        <img
+          src={member.collage[0].src}
+          alt={member.collage[0].alt}
+          class="col-span-2 w-full h-full object-cover object-[center_30%]"
+          loading="lazy"
+          decoding="async"
+        />
+        {/* 1×2 row — the faces that rotate week to week */}
+        {member.collage.slice(1, 3).map((photo) => (
+          <img
+            src={photo.src}
+            alt={photo.alt}
+            class="w-full h-full object-cover object-top"
+            loading="lazy"
+            decoding="async"
+          />
+        ))}
+      </div>
+    ) : member.image ? (
       <img
         src={member.image}
         alt={`${member.name}, ${member.title} at Elko Baptist Church`}
