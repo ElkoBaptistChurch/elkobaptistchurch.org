@@ -12,10 +12,6 @@ export function toCardProps(entry: SermonEntry) {
   return { id: entry.id, ...entry.data };
 }
 
-export function getSeriesList(entries: SermonEntry[]): string[] {
-  return [...new Set(entries.map((e) => e.data.series).filter((s): s is string => Boolean(s)))];
-}
-
 export function getYearTags(entries: SermonEntry[]): string[] {
   const years = new Set<string>();
   entries.forEach((e) => e.data.tags.forEach((t) => {
@@ -33,13 +29,13 @@ export function getBookTags(entries: SermonEntry[]): string[] {
 }
 
 export interface RecentPill {
-  type: 'series' | 'book' | 'tag';
+  type: 'book' | 'tag';
   value: string;
 }
 
 // A small "recently used" cloud of filters, pulled from the most recent
 // sermons (not the whole archive) so it stays relevant as the archive grows
-// into the hundreds. Mixes series, scripture books, and topic tags, capped
+// into the hundreds. Mixes scripture books and topic tags, capped
 // to `limit` total and ordered by recency of first appearance.
 export function getRecentPills(
   entries: SermonEntry[],
@@ -51,11 +47,6 @@ export function getRecentPills(
 
   for (const entry of pool) {
     if (pills.length >= limit) break;
-
-    if (entry.data.series && !seen.has(entry.data.series)) {
-      seen.add(entry.data.series);
-      pills.push({ type: 'series', value: entry.data.series });
-    }
 
     for (const tag of entry.data.tags) {
       if (/^\d{4}Sermons$/.test(tag) || seen.has(tag)) continue;

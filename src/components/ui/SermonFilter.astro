@@ -1,6 +1,6 @@
 ---
 interface RecentPill {
-  type: 'series' | 'book' | 'tag';
+  type: 'book' | 'tag';
   value: string;
 }
 
@@ -10,16 +10,14 @@ interface ComboboxOption {
 }
 
 interface Props {
-  series: string[];
   years: string[]; // e.g. "2026Sermons"
   books: string[];
   recentPills?: RecentPill[];
   pageSize?: number;
 }
 
-const { series, years, books, recentPills = [], pageSize = 24 } = Astro.props;
+const { years, books, recentPills = [], pageSize = 24 } = Astro.props;
 
-const seriesOptions: ComboboxOption[] = series.map((s) => ({ value: s, label: s }));
 const bookOptions: ComboboxOption[] = books.map((b) => ({ value: b, label: b }));
 const yearOptions: ComboboxOption[] = years.map((y) => ({ value: y, label: y.replace('Sermons', '') }));
 ---
@@ -45,49 +43,6 @@ const yearOptions: ComboboxOption[] = years.map((y) => ({ value: y, label: y.rep
     </div>
 
     <div class="flex flex-wrap gap-3">
-      {seriesOptions.length > 0 && (
-        <div class="flex flex-col gap-1.5">
-          <label for="sermon-filter-series" class="font-body font-medium text-stone-800 text-sm">Series</label>
-          <div class="relative w-44" data-combobox data-filter-mode="substring">
-            <input
-              type="text"
-              id="sermon-filter-series"
-              role="combobox"
-              aria-expanded="false"
-              aria-controls="sermon-series-listbox"
-              aria-autocomplete="list"
-              autocomplete="off"
-              placeholder="All series"
-              class="w-full pl-3 pr-9 py-2.5 text-stone-900 bg-cream border border-stone-300 rounded-sm text-base
-                     focus-visible:outline-2 focus-visible:outline-burgundy-700 focus:border-burgundy-700
-                     placeholder:text-stone-400"
-            />
-            <svg
-              class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-500"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              aria-hidden="true"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6" />
-            </svg>
-            <ul
-              id="sermon-series-listbox"
-              role="listbox"
-              class="hidden absolute z-20 left-0 right-0 mt-1 max-h-60 overflow-y-auto bg-warm-white
-                     border border-stone-200 rounded-sm shadow-md py-1"
-            >
-              {seriesOptions.map((opt) => (
-                <li role="option" data-value={opt.value} data-label={opt.label} tabindex="-1" class="px-3 py-2 text-stone-800 text-base cursor-pointer hover:bg-burgundy-50 aria-selected:bg-burgundy-50 aria-selected:font-semibold">
-                  {opt.label}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      )}
-
       {bookOptions.length > 0 && (
         <div class="flex flex-col gap-1.5">
           <label for="sermon-filter-book" class="font-body font-medium text-stone-800 text-sm">Book</label>
@@ -338,8 +293,7 @@ const yearOptions: ComboboxOption[] = years.map((y) => ({ value: y, label: y.rep
 
     let visibleCount = pageSize;
 
-    function matches(card: HTMLElement, query: string, seriesQuery: string, book: string, year: string) {
-      if (seriesQuery && !(card.dataset.series || '').toLowerCase().includes(seriesQuery)) return false;
+    function matches(card: HTMLElement, query: string, book: string, year: string) {
       const tags = (card.dataset.tags || '').split('|');
       if (book && !tags.includes(book)) return false;
       if (year && !tags.includes(year)) return false;
@@ -350,13 +304,12 @@ const yearOptions: ComboboxOption[] = years.map((y) => ({ value: y, label: y.rep
       return true;
     }
 
-    function updatePillStates(seriesQuery: string, book: string, query: string) {
+    function updatePillStates(book: string, query: string) {
       pills.forEach((pill) => {
         const { type, value } = pill.dataset;
         const valueLower = (value || '').toLowerCase();
         let active = false;
-        if (type === 'series') active = seriesQuery === valueLower;
-        else if (type === 'book') active = book === value;
+        if (type === 'book') active = book === value;
         else active = query === valueLower;
         pill.setAttribute('aria-pressed', String(active));
       });
@@ -364,7 +317,6 @@ const yearOptions: ComboboxOption[] = years.map((y) => ({ value: y, label: y.rep
 
     function render() {
       const query = (searchInput?.value || '').trim().toLowerCase();
-      const seriesQuery = seriesCombobox?.getValue() || '';
       const book = bookCombobox?.getValue() || '';
       const year = yearCombobox?.getValue() || '';
 
@@ -372,7 +324,7 @@ const yearOptions: ComboboxOption[] = years.map((y) => ({ value: y, label: y.rep
       let matched = 0;
 
       cards.forEach((card) => {
-        const isMatch = matches(card, query, seriesQuery, book, year);
+        const isMatch = matches(card, query, book, year);
         if (isMatch) matched += 1;
         const shouldShow = isMatch && matched <= visibleCount;
         card.classList.toggle('hidden', !shouldShow);
@@ -393,7 +345,7 @@ const yearOptions: ComboboxOption[] = years.map((y) => ({ value: y, label: y.rep
         emptyState.classList.toggle('hidden', matched !== 0);
       }
 
-      updatePillStates(seriesQuery, book, query);
+      updatePillStates(book, query);
     }
 
     function onFilterChange() {
@@ -401,11 +353,9 @@ const yearOptions: ComboboxOption[] = years.map((y) => ({ value: y, label: y.rep
       render();
     }
 
-    const seriesWrapper = document.querySelector('#sermon-filter-series')?.closest('[data-combobox]') as HTMLElement | null;
     const bookWrapper = document.querySelector('#sermon-filter-book')?.closest('[data-combobox]') as HTMLElement | null;
     const yearWrapper = document.querySelector('#sermon-filter-year')?.closest('[data-combobox]') as HTMLElement | null;
 
-    const seriesCombobox = seriesWrapper ? setupCombobox(seriesWrapper, onFilterChange) : null;
     const bookCombobox = bookWrapper ? setupCombobox(bookWrapper, onFilterChange) : null;
     const yearCombobox = yearWrapper ? setupCombobox(yearWrapper, onFilterChange) : null;
 
@@ -417,9 +367,7 @@ const yearOptions: ComboboxOption[] = years.map((y) => ({ value: y, label: y.rep
         const alreadyActive = pill.getAttribute('aria-pressed') === 'true';
         const newValue = alreadyActive ? '' : (value || '');
 
-        if (type === 'series') {
-          seriesCombobox?.setValue(newValue);
-        } else if (type === 'book') {
+        if (type === 'book') {
           bookCombobox?.setValue(newValue);
         } else if (searchInput) {
           searchInput.value = newValue;
