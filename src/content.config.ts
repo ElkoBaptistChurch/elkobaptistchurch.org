@@ -23,9 +23,6 @@ const sermons = defineCollection({
     duration: z.string().optional(),
     youtubeId: z.string().optional(),
     tags: z.array(z.string()).default([]),
-    // True when the sync script couldn't confidently parse scripture/summary
-    // from the YouTube metadata and an AI/human pass still needs to tag it.
-    needsReview: z.boolean().default(false),
   }),
 });
 

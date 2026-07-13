@@ -1,0 +1,72 @@
+---
+import { sermonBook, sermonTopics, formatSermonDate } from '@/utils/sermons';
+
+interface SermonProps {
+  id: string;
+  title: string;
+  speaker: string;
+  date: string;
+  scripture: string;
+  description: string;
+  duration?: string;
+  youtubeId?: string;
+  tags: string[];
+}
+
+interface Props {
+  sermon: SermonProps;
+  hidden?: boolean; // initial server-side visibility (JS takes over after load)
+}
+
+const { sermon, hidden = false } = Astro.props;
+const { id, title, speaker, date, scripture, description, duration, youtubeId, tags } = sermon;
+
+const book = sermonBook(tags) ?? '';
+const topics = sermonTopics(tags);
+const isVideo = Boolean(youtubeId);
+const href = `/sermons/${id}/`;
+const formattedDate = formatSermonDate(date);
+const search = `${title} ${scripture} ${description} ${topics.join(' ')}`.toLowerCase();
+---
+
+<a
+  href={href}
+  class="sermon-row group grid grid-cols-[1fr_auto] gap-6 items-start py-5 px-3 border-b border-stone-200 hover:bg-burgundy-50 transition-colors"
+  hidden={hidden}
+  data-book={book}
+  data-topics={topics.join('|')}
+  data-search={search}
+  data-title={title}
+  data-scripture={scripture}
+  data-date={formattedDate}
+  data-iso={date}
+  data-duration={duration ?? ''}
+  data-speaker={speaker}
+  data-video={isVideo ? '1' : ''}
+  data-href={href}
+  data-desc={description}
+>
+  <span class="min-w-0">
+    <span class="block font-display text-base font-semibold text-burgundy-900 leading-tight">{scripture}</span>
+    <span class="block font-display text-2xl font-bold text-stone-900 leading-snug mt-0.5 mb-2">{title}</span>
+    <span class="block text-stone-600 text-[0.95rem] leading-relaxed line-clamp-2">{description}</span>
+    <span class="block text-stone-400 text-xs mt-2.5">
+      <time datetime={date}>{formattedDate}</time>
+      {topics.length > 0 && (
+        <>
+          <span class="text-stone-300 mx-1.5" aria-hidden="true">&middot;</span>
+          {topics.map((t) => `#${t}`).join(' ')}
+        </>
+      )}
+    </span>
+  </span>
+
+  <span class="flex flex-col items-end gap-3 pt-0.5">
+    {duration && (
+      <span class="text-xs text-stone-600 bg-stone-100 px-2.5 py-0.5 rounded-full whitespace-nowrap">{duration}</span>
+    )}
+    <span class="w-9 h-9 rounded-full bg-burgundy-50 border border-burgundy-200 flex items-center justify-center group-hover:bg-burgundy-100 transition-colors flex-shrink-0" aria-hidden="true">
+      <svg class="w-3.5 h-3.5 text-burgundy-800 ml-0.5" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
+    </span>
+  </span>
+</a>

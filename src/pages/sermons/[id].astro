@@ -1,0 +1,253 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/components/layout/BaseLayout.astro';
+import Button from '@/components/ui/Button.astro';
+import SermonPlayer from '@/components/ui/SermonPlayer.astro';
+import SermonScripture from '@/components/ui/SermonScripture.astro';
+import SermonCard from '@/components/ui/SermonCard.astro';
+import { siteConfig } from '@/data/site';
+import {
+  sortByDateDesc,
+  toCardProps,
+  sermonBook,
+  sermonTopics,
+  formatSermonDate,
+} from '@/utils/sermons';
+import { buildCanonical, webPageSchema } from '@/utils/seo';
+import { getPassage } from '@/utils/bible';
+
+export async function getStaticPaths() {
+  const entries = sortByDateDesc(await getCollection('sermons'));
+
+  return entries.map((entry) => {
+    const book = sermonBook(entry.data.tags);
+    // Related: others in the same book first, otherwise most recent — cap at 3.
+    const related = entries
+      .filter((e) => e.id !== entry.id)
+      .sort(
+        (a, b) =>
+          (sermonBook(a.data.tags) === book ? 0 : 1) -
+          (sermonBook(b.data.tags) === book ? 0 : 1),
+      )
+      .slice(0, 3)
+      .map(toCardProps);
+
+    return {
+      params: { id: entry.id },
+      props: {
+        sermon: entry.data,
+        id: entry.id,
+        related,
+        passage: getPassage(entry.data.scripture),
+      },
+    };
+  });
+}
+
+const { sermon, id, related, passage } = Astro.props;
+const topics = sermonTopics(sermon.tags);
+const formattedDate = formatSermonDate(sermon.date);
+const canonical = buildCanonical(`/sermons/${id}/`);
+
+const metaDescription =
+  sermon.description.length > 155
+    ? `${sermon.description.slice(0, 152).trimEnd()}…`
+    : sermon.description;
+
+// WebPage + (when there's video) VideoObject for rich results.
+const schema: object[] = [
+  webPageSchema({
+    title: sermon.title,
+    description: metaDescription,
+    url: canonical,
+    breadcrumbs: [
+      { name: 'Sermons', url: buildCanonical('/sermons/') },
+      { name: sermon.title, url: canonical },
+    ],
+  }),
+];
+
+if (sermon.youtubeId) {
+  schema.push({
+    '@context': 'https://schema.org',
+    '@type': 'VideoObject',
+    name: sermon.title,
+    description: sermon.description,
+    thumbnailUrl: [`https://img.youtube.com/vi/${sermon.youtubeId}/maxresdefault.jpg`],
+    uploadDate: sermon.date,
+    embedUrl: `https://www.youtube.com/embed/${sermon.youtubeId}`,
+    contentUrl: `https://www.youtube.com/watch?v=${sermon.youtubeId}`,
+    publisher: {
+      '@type': 'Organization',
+      name: siteConfig.name,
+      url: siteConfig.url,
+    },
+  });
+}
+---
+
+<BaseLayout title={sermon.title} description={metaDescription} schema={schema}>
+  <article class="bg-cream">
+    <div class="section-container py-10 md:py-14">
+      <!-- Breadcrumb -->
+      <nav class="text-sm text-stone-500 mb-6" aria-label="Breadcrumb">
+        <a href="/sermons/" class="text-burgundy-800 font-semibold hover:text-burgundy-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-burgundy-700 rounded">Sermons</a>
+        <span class="mx-2 text-stone-300" aria-hidden="true">/</span>
+        <span class="text-stone-600">{sermon.title}</span>
+      </nav>
+
+      <!-- Header spans both columns so the video and metadata rail below top-align -->
+      <header class="mb-6">
+        <div class="inline-flex items-center gap-1.5 mb-3">
+          <svg class="w-4 h-4 text-wheat-600 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+          </svg>
+          <span class="text-wheat-700 text-sm font-body font-semibold">{sermon.scripture}</span>
+        </div>
+        <h1 class="font-display text-3xl md:text-4xl font-bold text-stone-900 leading-tight">
+          {sermon.title}
+        </h1>
+      </header>
+
+      <!-- Video + tabs (left) with a metadata rail (right) -->
+      <div class="grid lg:grid-cols-[1fr_320px] gap-8 lg:gap-10 items-start">
+        <!-- Main column: video, then tabs -->
+        <div>
+          <SermonPlayer youtubeId={sermon.youtubeId} title={sermon.title} duration={sermon.duration} />
+
+          <!-- Tabs under the video: Read the Passage (default) | About This Message -->
+          <div id="sermon-tabs" class="mt-8">
+            <div class="flex gap-1 border-b-2 border-stone-200" role="tablist" aria-label="Sermon content">
+              <button
+                type="button"
+                class="sermon-tab font-body font-semibold text-sm py-3 px-4 border-b-[3px] -mb-[2px] text-burgundy-900 border-burgundy-900"
+                data-pane="scripture"
+                role="tab"
+                aria-selected="true"
+              >
+                Read the Passage
+              </button>
+              <button
+                type="button"
+                class="sermon-tab font-body font-semibold text-sm py-3 px-4 border-b-[3px] -mb-[2px] text-stone-500 border-transparent hover:text-burgundy-800"
+                data-pane="about"
+                role="tab"
+                aria-selected="false"
+              >
+                About This Message
+              </button>
+            </div>
+
+            <div class="sermon-pane pt-6" data-pane="scripture" role="tabpanel">
+              <SermonScripture scripture={sermon.scripture} passage={passage} />
+            </div>
+
+            <div class="sermon-pane pt-6 hidden" data-pane="about" role="tabpanel">
+              <p class="text-stone-600 text-lg leading-relaxed">{sermon.description}</p>
+              {topics.length > 0 && (
+                <div class="flex flex-wrap gap-2 mt-6">
+                  {topics.map((t) => (
+                    <a
+                      href={`/sermons/?topic=${encodeURIComponent(t)}`}
+                      class="text-xs font-body font-semibold text-burgundy-800 bg-burgundy-50 border border-burgundy-100 px-3 py-1 rounded-full hover:bg-burgundy-100 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-burgundy-700"
+                    >
+                      {t}
+                    </a>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <!-- Metadata rail -->
+        <aside class="bg-warm-white border border-stone-200 rounded-xl p-6 lg:sticky lg:top-24">
+          <dl class="grid gap-4">
+            <div>
+              <dt class="text-[0.68rem] uppercase tracking-wider text-stone-400 font-bold">Preacher</dt>
+              <dd class="text-stone-800 font-semibold text-[0.95rem] mt-0.5">{sermon.speaker}</dd>
+            </div>
+            <div>
+              <dt class="text-[0.68rem] uppercase tracking-wider text-stone-400 font-bold">Date</dt>
+              <dd class="text-stone-800 font-semibold text-[0.95rem] mt-0.5">
+                <time datetime={sermon.date}>{formattedDate}</time>
+              </dd>
+            </div>
+            <div>
+              <dt class="text-[0.68rem] uppercase tracking-wider text-stone-400 font-bold">Passage</dt>
+              <dd class="text-stone-800 font-semibold text-[0.95rem] mt-0.5">{sermon.scripture}</dd>
+            </div>
+            {sermon.duration && (
+              <div>
+                <dt class="text-[0.68rem] uppercase tracking-wider text-stone-400 font-bold">Length</dt>
+                <dd class="text-stone-800 font-semibold text-[0.95rem] mt-0.5">{sermon.duration}</dd>
+              </div>
+            )}
+          </dl>
+
+          <div class="mt-6 grid gap-3">
+            {sermon.youtubeId && (
+              <Button
+                href={`https://www.youtube.com/watch?v=${sermon.youtubeId}`}
+                variant="primary"
+                size="md"
+                class="w-full"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
+                Open on YouTube
+              </Button>
+            )}
+            <Button
+              href={siteConfig.social.youtube}
+              variant="outline"
+              size="md"
+              class="w-full"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Subscribe on YouTube
+            </Button>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <!-- Related -->
+    {related.length > 0 && (
+      <section class="section-py bg-cream border-t border-stone-200" aria-label="More sermons">
+        <div class="section-container">
+          <h2 class="font-display text-2xl md:text-3xl font-bold text-burgundy-900 mb-8">Keep Listening</h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+            {related.map((s) => (
+              <SermonCard sermon={s} featured={false} />
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+  </article>
+
+  <script>
+    // Tab switching for the read-along / about tabs under the video.
+    document.querySelectorAll<HTMLElement>('.sermon-tab').forEach((tab) => {
+      tab.addEventListener('click', () => {
+        const panel = tab.closest('#sermon-tabs');
+        if (!panel) return;
+        const target = tab.getAttribute('data-pane');
+        panel.querySelectorAll('.sermon-tab').forEach((t) => {
+          const on = t === tab;
+          t.setAttribute('aria-selected', on ? 'true' : 'false');
+          t.classList.toggle('text-burgundy-900', on);
+          t.classList.toggle('border-burgundy-900', on);
+          t.classList.toggle('text-stone-500', !on);
+          t.classList.toggle('border-transparent', !on);
+        });
+        panel.querySelectorAll('.sermon-pane').forEach((p) => {
+          p.classList.toggle('hidden', p.getAttribute('data-pane') !== target);
+        });
+      });
+    });
+  </script>
+</BaseLayout>

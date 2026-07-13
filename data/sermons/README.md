@@ -28,8 +28,7 @@ exact layout doesn't matter to the build. Keep one sermon per file.
   "description": "Full sermon summary…",
   "duration": "38 min",
   "youtubeId": "YBECuXzRKKo",
-  "tags": ["grace", "salvation", "John", "2026Sermons"],
-  "needsReview": false
+  "tags": ["grace", "salvation", "John", "2026Sermons"]
 }
 ```
 
@@ -47,7 +46,6 @@ file violates it, so n8n output must conform.
 | `duration`    | no       | e.g. `38 min`. |
 | `youtubeId`   | no       | When present, cards link straight to YouTube. |
 | `tags`        | no       | Defaults to `[]`. See below. |
-| `needsReview` | no       | Defaults to `false`. Shows a "Needs tagging" badge. |
 
 \* Recommended. The `id` must be unique across all files.
 

@@ -9,7 +9,6 @@ interface SermonProps {
   duration?: string;
   youtubeId?: string;
   tags: string[];
-  needsReview?: boolean;
 }
 
 interface Props {
@@ -28,12 +27,10 @@ const {
   description,
   duration,
   youtubeId,
-  needsReview,
 } = sermon;
 
-const watchUrl = youtubeId
-  ? `https://www.youtube.com/watch?v=${youtubeId}`
-  : `/sermons/${id}/`;
+// Always link to the on-site sermon page; the embedded player lives there.
+const watchUrl = `/sermons/${id}/`;
 
 const formattedDate = new Date(date + 'T00:00:00').toLocaleDateString('en-US', {
   year: 'numeric',
@@ -112,8 +109,6 @@ const formattedDate = new Date(date + 'T00:00:00').toLocaleDateString('en-US', {
           <a
             href={watchUrl}
             class="inline-flex items-center gap-2.5 bg-burgundy-900 text-warm-white font-body font-semibold px-7 py-3.5 rounded-sm hover:bg-burgundy-800 active:bg-burgundy-950 transition-colors duration-200 shadow-sm hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-burgundy-700"
-            target={youtubeId ? '_blank' : undefined}
-            rel={youtubeId ? 'noopener noreferrer' : undefined}
           >
             <svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <path d="M8 5v14l11-7z" />
@@ -132,24 +127,11 @@ const formattedDate = new Date(date + 'T00:00:00').toLocaleDateString('en-US', {
     <div class="h-1 bg-gradient-to-r from-burgundy-700 to-burgundy-500" aria-hidden="true"></div>
 
     <div class="p-6 md:p-7 flex flex-col flex-1">
-      {needsReview && (
-        <div class="flex items-center justify-end gap-2">
-          <span class="flex-shrink-0 bg-stone-100 text-stone-500 text-[11px] font-body font-semibold px-2 py-0.5 rounded-full mb-2" title="Awaiting scripture/topic tagging">
-            Needs tagging
-          </span>
-        </div>
-      )}
+      <p class="font-display text-lg font-semibold text-burgundy-900 mb-1.5">{scripture}</p>
 
       <h3 class="font-display text-xl md:text-2xl font-bold text-stone-900 leading-snug mb-3">
         {title}
       </h3>
-
-      <div class="inline-flex items-center gap-1.5 mb-4">
-        <svg class="w-3.5 h-3.5 text-wheat-600 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-        </svg>
-        <span class="text-wheat-700 text-xs font-body font-semibold">{scripture}</span>
-      </div>
 
       <div class="flex items-center justify-between mb-4 gap-2">
         <p class="text-stone-500 text-sm font-body">
@@ -170,8 +152,6 @@ const formattedDate = new Date(date + 'T00:00:00').toLocaleDateString('en-US', {
         <a
           href={watchUrl}
           class="inline-flex items-center gap-2 text-burgundy-800 font-body font-semibold text-sm hover:text-burgundy-600 transition-colors duration-150 group focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-burgundy-700 rounded"
-          target={youtubeId ? '_blank' : undefined}
-          rel={youtubeId ? 'noopener noreferrer' : undefined}
         >
           <span class="w-8 h-8 rounded-full bg-burgundy-50 border border-burgundy-200 flex items-center justify-center group-hover:bg-burgundy-100 transition-colors duration-150 flex-shrink-0">
             <svg class="w-3.5 h-3.5 text-burgundy-800 ml-0.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
