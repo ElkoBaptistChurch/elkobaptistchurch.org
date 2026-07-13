@@ -1,0 +1,83 @@
+---
+// Click-to-load YouTube facade. Renders only a thumbnail + play button until
+// the visitor clicks; the real iframe is injected on demand so a page full of
+// sermons never pays for dozens of YouTube embeds up front. When there's no
+// youtubeId (audio-only / not yet posted), falls back to a static image.
+interface Props {
+  youtubeId?: string;
+  title: string;
+  duration?: string;
+  class?: string;
+}
+
+const { youtubeId, title, duration, class: className = '' } = Astro.props;
+---
+
+{youtubeId ? (
+  <div
+    class:list={[
+      'sermon-player group relative aspect-video bg-black rounded-xl overflow-hidden shadow-lg cursor-pointer',
+      className,
+    ]}
+    data-yt={youtubeId}
+    data-title={title}
+  >
+    <img
+      src={`https://img.youtube.com/vi/${youtubeId}/maxresdefault.jpg`}
+      alt={`Watch: ${title}`}
+      class="w-full h-full object-cover opacity-95 group-hover:opacity-100 transition-opacity duration-200"
+      loading="lazy"
+      decoding="async"
+      onerror={`this.onerror=null;this.src='https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg'`}
+    />
+    <span
+      class="pointer-events-none absolute inset-0 flex items-center justify-center"
+      aria-hidden="true"
+    >
+      <span class="w-[70px] h-[70px] rounded-full bg-wheat-500 flex items-center justify-center shadow-lg group-hover:scale-105 group-hover:bg-wheat-400 transition duration-200">
+        <svg class="w-7 h-7 text-burgundy-950 ml-1" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
+      </span>
+    </span>
+    <button
+      type="button"
+      class="sermon-player-btn absolute inset-0 w-full h-full opacity-0 focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-wheat-500"
+      aria-label={`Play video: ${title}`}
+    ></button>
+    {duration && (
+      <span class="pointer-events-none absolute bottom-3 right-3 bg-burgundy-950/85 text-warm-white text-xs font-body font-semibold px-2 py-1 rounded backdrop-blur-sm">
+        {duration}
+      </span>
+    )}
+  </div>
+) : (
+  <div class:list={['relative aspect-video rounded-xl overflow-hidden shadow-lg', className]}>
+    <img
+      src="/images/Pastor-Wayne-Bible.jpg"
+      alt="Pastor Wayne Holcomb preaching from the Bible"
+      class="absolute inset-0 w-full h-full object-cover"
+      loading="lazy"
+      decoding="async"
+    />
+    <div class="absolute inset-0 bg-burgundy-950/40"></div>
+    <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
+      <span class="text-warm-white/90 font-body text-sm">Video coming soon</span>
+    </div>
+  </div>
+)}
+
+<script>
+  // Delegated so it works for any SermonPlayer on the page. First click swaps the
+  // facade for the autoplaying embed.
+  document.addEventListener('click', (e) => {
+    const player = (e.target as HTMLElement).closest<HTMLElement>('.sermon-player');
+    if (!player || player.dataset.loaded) return;
+    const id = player.dataset.yt;
+    if (!id) return;
+    player.dataset.loaded = '1';
+    const title = (player.dataset.title || 'Sermon video').replace(/"/g, '&quot;');
+    player.innerHTML =
+      `<iframe src="https://www.youtube.com/embed/${id}?autoplay=1" title="${title}" ` +
+      `allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" ` +
+      `allowfullscreen class="w-full h-full"></iframe>`;
+  });
+</script>

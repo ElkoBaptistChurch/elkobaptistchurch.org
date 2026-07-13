@@ -4,15 +4,14 @@ import BaseLayout from '@/components/layout/BaseLayout.astro';
 import SectionHeading from '@/components/ui/SectionHeading.astro';
 import Button from '@/components/ui/Button.astro';
 import SermonCard from '@/components/ui/SermonCard.astro';
+import SermonRow from '@/components/ui/SermonRow.astro';
 import SermonFilter from '@/components/ui/SermonFilter.astro';
 import { siteConfig } from '@/data/site';
 import {
   sortByDateDesc,
   toCardProps,
-  getSeriesList,
-  getYearTags,
-  getBookTags,
-  getRecentPills,
+  getBookFacets,
+  getTopicFacets,
 } from '@/utils/sermons';
 import { webPageSchema, buildCanonical } from '@/utils/seo';
 
@@ -29,13 +28,18 @@ const schema = webPageSchema({
 
 const allSermons = sortByDateDesc(await getCollection('sermons'));
 const latestSermon = toCardProps(allSermons[0]);
-// The first sermon is the featured/latest; remaining fill the searchable grid
-const gridSermons = allSermons.slice(1).map(toCardProps);
 
-const seriesList = getSeriesList(allSermons);
-const years = getYearTags(allSermons);
-const books = getBookTags(allSermons);
-const recentPills = getRecentPills(allSermons, { limit: 10, recentCount: 20 });
+// Archive discovery: hero cards (top matches) + a paginated row list below.
+const archiveSermons = allSermons.map(toCardProps);
+const bookFacets = getBookFacets(allSermons);
+const topicFacets = getTopicFacets(allSermons);
+
+const HERO_COUNT = 6;
+const DEFAULT_PAGE_SIZE = 15;
+// Initial server-rendered visibility (JS takes over after load): first 6 show as
+// hero cards, the next page of rows shows below; the rest are present but hidden.
+const initiallyVisible = (i: number) =>
+  i >= HERO_COUNT && i < HERO_COUNT + DEFAULT_PAGE_SIZE;
 ---
 
 <BaseLayout
@@ -160,10 +164,6 @@ const recentPills = getRecentPills(allSermons, { limit: 10, recentCount: 20 });
 
             <!-- Text column -->
             <div class="p-8 md:p-10 flex flex-col justify-center">
-              {latestSermon.series && (
-                <span class="eyebrow text-wheat-700 mb-3 block">{latestSermon.series}</span>
-              )}
-
               <h3 class="font-display text-3xl md:text-4xl font-bold text-stone-900 leading-tight mb-4">
                 {latestSermon.title}
               </h3>
@@ -176,17 +176,17 @@ const recentPills = getRecentPills(allSermons, { limit: 10, recentCount: 20 });
                 <span class="text-wheat-700 text-sm font-body font-semibold">{latestSermon.scripture}</span>
               </div>
 
-              <!-- Speaker + date -->
+              <!-- Date + speaker -->
               <p class="text-stone-500 text-sm font-body mb-5">
-                <span class="font-semibold text-stone-700">{latestSermon.speaker}</span>
-                <span class="mx-1.5 text-stone-300" aria-hidden="true">&bull;</span>
-                <time datetime={latestSermon.date}>
+                <time datetime={latestSermon.date} class="font-semibold text-stone-700">
                   {new Date(latestSermon.date + 'T00:00:00').toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric',
                   })}
                 </time>
+                <span class="mx-1.5 text-stone-300" aria-hidden="true">&bull;</span>
+                <span>{latestSermon.speaker}</span>
               </p>
 
               <p class="text-stone-600 text-lg leading-relaxed mb-8">
@@ -217,73 +217,65 @@ const recentPills = getRecentPills(allSermons, { limit: 10, recentCount: 20 });
   </section>
 
   <!-- ====================================================
-       SERMON SERIES PILLS
-  ===================================================== -->
-  {seriesList.length > 0 && (
-    <section
-      aria-labelledby="series-heading"
-      class="bg-parchment border-y border-stone-200 py-10"
-    >
-      <div class="section-container">
-        <div class="flex flex-wrap items-center gap-3">
-          <h2 id="series-heading" class="font-body font-semibold text-stone-700 text-sm uppercase tracking-widest mr-2 flex-shrink-0">
-            Current Series:
-          </h2>
-          {seriesList.map((series) => (
-            <span class="inline-flex items-center gap-1.5 bg-warm-white border border-stone-200 text-stone-700 font-body font-medium text-sm px-4 py-2 rounded-full shadow-sm">
-              <span class="w-1.5 h-1.5 rounded-full bg-wheat-500 flex-shrink-0" aria-hidden="true"></span>
-              {series}
-            </span>
-          ))}
-        </div>
-      </div>
-    </section>
-  )}
-
-  <!-- ====================================================
-       ALL SERMONS GRID
+       THE ARCHIVE — hero cards + paginated, searchable list
   ===================================================== -->
   <section
     id="recent-messages"
-    aria-labelledby="recent-messages-heading"
+    aria-labelledby="archive-heading"
     class="section-py bg-cream"
   >
     <div class="section-container">
-      <div class="mb-12">
+      <div class="mb-8">
         <SectionHeading
-          label="Sermon Archive"
-          heading="Recent Messages"
-          subheading="Every message is an invitation to go deeper in God's Word. Browse what Pastor Wayne has been preaching through."
+          label="The Archive"
+          heading="Every Message"
+          subheading="We're whole-Bible believers — Pastor Wayne preaches straight through the text. Search for a passage, or browse by book and topic."
           as="h2"
         />
       </div>
 
-      {gridSermons.length > 0 ? (
+      {archiveSermons.length > 0 ? (
         <>
-          <SermonFilter series={seriesList} years={years} books={books} recentPills={recentPills} pageSize={24} />
+          <SermonFilter bookFacets={bookFacets} topicFacets={topicFacets} />
 
-          <div id="sermon-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-            {gridSermons.map((sermon) => (
-              <div
-                data-sermon-card
-                data-series={sermon.series || ''}
-                data-tags={sermon.tags.join('|')}
-                data-search={`${sermon.title} ${sermon.scripture} ${sermon.description} ${sermon.series || ''} ${sermon.tags.join(' ')}`.toLowerCase()}
-              >
+          <!-- Hero cards: most recent, or top matches for the active filter -->
+          <section id="sermon-heroes-section" class="mb-12" aria-label="Featured sermons">
+            <div class="flex items-end justify-between gap-4 mb-5">
+              <h3 id="sermon-hero-label" class="font-display text-2xl font-bold text-burgundy-900">Most Recent</h3>
+              <span id="sermon-hero-hint" class="text-stone-400 text-sm"></span>
+            </div>
+            <div id="sermon-heroes" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+              {archiveSermons.slice(0, HERO_COUNT).map((sermon) => (
                 <SermonCard sermon={sermon} featured={false} />
+              ))}
+            </div>
+          </section>
+
+          <!-- Paginated message list -->
+          <section id="sermon-list-section" aria-label="Sermon archive">
+            <div class="flex flex-wrap items-center justify-between gap-3 border-b-2 border-burgundy-900 pb-3">
+              <h3 id="sermon-list-label" class="font-display text-2xl font-bold text-burgundy-900">Earlier Messages</h3>
+              <div class="flex items-center gap-2 text-sm text-stone-500">
+                <label for="sermon-size">Per page</label>
+                <select id="sermon-size" class="bg-warm-white border border-stone-300 rounded-sm px-2 py-1.5 text-stone-800 focus-visible:outline-2 focus-visible:outline-burgundy-700">
+                  <option value="15">15</option>
+                  <option value="30">30</option>
+                  <option value="50">50</option>
+                </select>
               </div>
-            ))}
-          </div>
+            </div>
+            <p id="sermon-count" class="text-stone-500 text-sm py-3" aria-live="polite"></p>
+            <div id="sermon-list">
+              {archiveSermons.map((sermon, i) => (
+                <SermonRow sermon={sermon} hidden={!initiallyVisible(i)} />
+              ))}
+            </div>
+            <nav id="sermon-pager" class="flex flex-wrap items-center justify-center gap-1.5 mt-8" aria-label="Sermon pages"></nav>
+          </section>
 
-          <div id="sermon-empty-state" class="hidden text-center py-16">
-            <p class="text-stone-500 text-lg">No sermons match your search. Try a different keyword or filter.</p>
-          </div>
-
-          <div class="mt-10 text-center">
-            <Button id="sermon-load-more" variant="outline" size="md" class="hidden">
-              Load More Sermons
-            </Button>
-          </div>
+          <p id="sermon-empty" hidden class="text-center text-stone-500 py-16 text-lg">
+            No messages match. Try a different passage, topic, or search.
+          </p>
         </>
       ) : (
         <div class="text-center py-16">

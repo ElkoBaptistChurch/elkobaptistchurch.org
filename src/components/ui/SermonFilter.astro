@@ -1,441 +1,335 @@
 ---
-interface RecentPill {
-  type: 'series' | 'book' | 'tag';
-  value: string;
-}
-
-interface ComboboxOption {
-  value: string;
-  label: string;
-}
+import type { Facet } from '@/utils/sermons';
 
 interface Props {
-  series: string[];
-  years: string[]; // e.g. "2026Sermons"
-  books: string[];
-  recentPills?: RecentPill[];
-  pageSize?: number;
+  bookFacets: { ot: Facet[]; nt: Facet[] };
+  topicFacets: Facet[];
 }
 
-const { series, years, books, recentPills = [], pageSize = 24 } = Astro.props;
-
-const seriesOptions: ComboboxOption[] = series.map((s) => ({ value: s, label: s }));
-const bookOptions: ComboboxOption[] = books.map((b) => ({ value: b, label: b }));
-const yearOptions: ComboboxOption[] = years.map((y) => ({ value: y, label: y.replace('Sermons', '') }));
+const { bookFacets, topicFacets } = Astro.props;
 ---
 
 <div
   id="sermon-filter"
-  data-page-size={pageSize}
-  class="bg-warm-white border border-stone-200 rounded-xl p-5 md:p-6 mb-8 flex flex-col gap-4"
+  class="bg-warm-white border border-stone-200 rounded-xl p-5 md:p-6 mb-10 shadow-sm"
 >
-  <div class="flex flex-col md:flex-row gap-4 md:items-end">
-    <div class="flex-1 flex flex-col gap-1.5">
-      <label for="sermon-search" class="font-body font-medium text-stone-800 text-sm">
-        Search sermons
-      </label>
+  <div class="flex flex-col md:flex-row gap-3 md:items-center">
+    <!-- Search -->
+    <div class="relative flex-1">
+      <label for="sermon-search" class="sr-only">Search sermons</label>
+      <svg class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path stroke-linecap="round" d="m21 21-4.3-4.3" /></svg>
       <input
         type="search"
         id="sermon-search"
-        placeholder="Search by title, scripture, or topic&hellip;"
-        class="w-full px-4 py-2.5 text-stone-900 bg-cream border border-stone-300 rounded-sm text-base
-               focus-visible:outline-2 focus-visible:outline-burgundy-700 focus:border-burgundy-700
-               placeholder:text-stone-400 transition-colors"
+        placeholder="Search a title, passage, or topic&hellip;"
+        class="w-full pl-9 pr-3 py-2.5 bg-cream border border-stone-300 rounded-sm text-base text-stone-900 placeholder:text-stone-400 focus-visible:outline-2 focus-visible:outline-burgundy-700 focus:border-burgundy-700 transition-colors"
       />
     </div>
 
-    <div class="flex flex-wrap gap-3">
-      {seriesOptions.length > 0 && (
-        <div class="flex flex-col gap-1.5">
-          <label for="sermon-filter-series" class="font-body font-medium text-stone-800 text-sm">Series</label>
-          <div class="relative w-44" data-combobox data-filter-mode="substring">
-            <input
-              type="text"
-              id="sermon-filter-series"
-              role="combobox"
-              aria-expanded="false"
-              aria-controls="sermon-series-listbox"
-              aria-autocomplete="list"
-              autocomplete="off"
-              placeholder="All series"
-              class="w-full pl-3 pr-9 py-2.5 text-stone-900 bg-cream border border-stone-300 rounded-sm text-base
-                     focus-visible:outline-2 focus-visible:outline-burgundy-700 focus:border-burgundy-700
-                     placeholder:text-stone-400"
-            />
-            <svg
-              class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-500"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              aria-hidden="true"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6" />
-            </svg>
-            <ul
-              id="sermon-series-listbox"
-              role="listbox"
-              class="hidden absolute z-20 left-0 right-0 mt-1 max-h-60 overflow-y-auto bg-warm-white
-                     border border-stone-200 rounded-sm shadow-md py-1"
-            >
-              {seriesOptions.map((opt) => (
-                <li role="option" data-value={opt.value} data-label={opt.label} tabindex="-1" class="px-3 py-2 text-stone-800 text-base cursor-pointer hover:bg-burgundy-50 aria-selected:bg-burgundy-50 aria-selected:font-semibold">
-                  {opt.label}
-                </li>
-              ))}
-            </ul>
-          </div>
+    <!-- Book -->
+    {(bookFacets.ot.length > 0 || bookFacets.nt.length > 0) && (
+      <div class="relative">
+        <button type="button" id="sermon-book-btn" aria-expanded="false" aria-haspopup="listbox"
+          class="w-full md:w-auto flex items-center justify-between gap-2 px-4 py-2.5 bg-cream border border-stone-300 rounded-sm text-base text-stone-700 hover:border-burgundy-700 focus-visible:outline-2 focus-visible:outline-burgundy-700">
+          <span>Book <span id="sermon-book-val" class="text-burgundy-800 font-semibold"></span></span>
+          <svg class="w-4 h-4 text-stone-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6" /></svg>
+        </button>
+        <div id="sermon-book-menu" class="sf-menu hidden absolute right-0 mt-1 w-[420px] max-w-[85vw] max-h-[55vh] overflow-y-auto bg-warm-white border border-stone-200 rounded-md p-4 z-40">
+          {bookFacets.ot.length > 0 && (
+            <>
+              <p class="eyebrow text-wheat-700 mb-2">Old Testament</p>
+              <div class="sf-bookcol mb-4">
+                {bookFacets.ot.map((f) => (
+                  <button type="button" class="sf-bookitem" data-book={f.value}><span>{f.value}</span><span class="sf-c">{f.count}</span></button>
+                ))}
+              </div>
+            </>
+          )}
+          {bookFacets.nt.length > 0 && (
+            <>
+              <p class="eyebrow text-wheat-700 mb-2">New Testament</p>
+              <div class="sf-bookcol">
+                {bookFacets.nt.map((f) => (
+                  <button type="button" class="sf-bookitem" data-book={f.value}><span>{f.value}</span><span class="sf-c">{f.count}</span></button>
+                ))}
+              </div>
+            </>
+          )}
         </div>
-      )}
+      </div>
+    )}
 
-      {bookOptions.length > 0 && (
-        <div class="flex flex-col gap-1.5">
-          <label for="sermon-filter-book" class="font-body font-medium text-stone-800 text-sm">Book</label>
-          <div class="relative w-40" data-combobox data-filter-mode="exact">
-            <input
-              type="text"
-              id="sermon-filter-book"
-              role="combobox"
-              aria-expanded="false"
-              aria-controls="sermon-book-listbox"
-              aria-autocomplete="list"
-              autocomplete="off"
-              placeholder="All books"
-              class="w-full pl-3 pr-9 py-2.5 text-stone-900 bg-cream border border-stone-300 rounded-sm text-base
-                     focus-visible:outline-2 focus-visible:outline-burgundy-700 focus:border-burgundy-700
-                     placeholder:text-stone-400"
-            />
-            <svg
-              class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-500"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              aria-hidden="true"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6" />
-            </svg>
-            <ul
-              id="sermon-book-listbox"
-              role="listbox"
-              class="hidden absolute z-20 left-0 right-0 mt-1 max-h-60 overflow-y-auto bg-warm-white
-                     border border-stone-200 rounded-sm shadow-md py-1"
-            >
-              {bookOptions.map((opt) => (
-                <li role="option" data-value={opt.value} data-label={opt.label} tabindex="-1" class="px-3 py-2 text-stone-800 text-base cursor-pointer hover:bg-burgundy-50 aria-selected:bg-burgundy-50 aria-selected:font-semibold">
-                  {opt.label}
-                </li>
-              ))}
-            </ul>
-          </div>
+    <!-- Topic -->
+    {topicFacets.length > 0 && (
+      <div class="relative">
+        <button type="button" id="sermon-topic-btn" aria-expanded="false" aria-haspopup="listbox"
+          class="w-full md:w-auto flex items-center justify-between gap-2 px-4 py-2.5 bg-cream border border-stone-300 rounded-sm text-base text-stone-700 hover:border-burgundy-700 focus-visible:outline-2 focus-visible:outline-burgundy-700">
+          <span>Topic <span id="sermon-topic-val" class="text-burgundy-800 font-semibold"></span></span>
+          <svg class="w-4 h-4 text-stone-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6" /></svg>
+        </button>
+        <div id="sermon-topic-menu" class="sf-menu hidden absolute right-0 mt-1 w-64 max-h-[55vh] overflow-y-auto bg-warm-white border border-stone-200 rounded-md p-2 z-40">
+          {topicFacets.map((f) => (
+            <button type="button" class="sf-bookitem" data-topic={f.value}><span>#{f.value}</span><span class="sf-c">{f.count}</span></button>
+          ))}
         </div>
-      )}
-
-      {yearOptions.length > 0 && (
-        <div class="flex flex-col gap-1.5">
-          <label for="sermon-filter-year" class="font-body font-medium text-stone-800 text-sm">Year</label>
-          <div class="relative w-32" data-combobox data-filter-mode="exact">
-            <input
-              type="text"
-              id="sermon-filter-year"
-              role="combobox"
-              aria-expanded="false"
-              aria-controls="sermon-year-listbox"
-              aria-autocomplete="list"
-              autocomplete="off"
-              placeholder="All years"
-              class="w-full pl-3 pr-9 py-2.5 text-stone-900 bg-cream border border-stone-300 rounded-sm text-base
-                     focus-visible:outline-2 focus-visible:outline-burgundy-700 focus:border-burgundy-700
-                     placeholder:text-stone-400"
-            />
-            <svg
-              class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-500"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              aria-hidden="true"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6" />
-            </svg>
-            <ul
-              id="sermon-year-listbox"
-              role="listbox"
-              class="hidden absolute z-20 left-0 right-0 mt-1 max-h-60 overflow-y-auto bg-warm-white
-                     border border-stone-200 rounded-sm shadow-md py-1"
-            >
-              {yearOptions.map((opt) => (
-                <li role="option" data-value={opt.value} data-label={opt.label} tabindex="-1" class="px-3 py-2 text-stone-800 text-base cursor-pointer hover:bg-burgundy-50 aria-selected:bg-burgundy-50 aria-selected:font-semibold">
-                  {opt.label}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      )}
-    </div>
+      </div>
+    )}
   </div>
 
-  {recentPills.length > 0 && (
-    <div class="flex flex-wrap items-center gap-1.5">
-      <span class="font-body font-medium text-stone-500 text-xs uppercase tracking-wide mr-1">
-        Recent:
-      </span>
-      {recentPills.map((pill) => (
-        <button
-          type="button"
-          data-sermon-pill
-          data-type={pill.type}
-          data-value={pill.value}
-          aria-pressed="false"
-          class="bg-cream border border-stone-300 text-stone-700 font-body text-xs px-2.5 py-1 rounded-full
-                 hover:border-burgundy-700 hover:text-burgundy-800 transition-colors
-                 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-burgundy-700
-                 aria-pressed:bg-burgundy-900 aria-pressed:border-burgundy-900 aria-pressed:text-warm-white"
-        >
-          {pill.type === 'tag' ? `#${pill.value}` : pill.value}
-        </button>
-      ))}
-    </div>
-  )}
-
-  <p id="sermon-result-count" class="text-stone-500 text-sm" aria-live="polite"></p>
+  <!-- Active filters -->
+  <div id="sermon-chiprow" class="hidden flex-wrap items-center gap-2 mt-4 pt-4 border-t border-stone-100">
+    <span class="eyebrow text-stone-400">Filtering</span>
+    <div id="sermon-chips" class="flex flex-wrap gap-2"></div>
+    <button type="button" id="sermon-clear" class="text-sm text-burgundy-800 font-semibold hover:text-burgundy-600 ml-1 focus-visible:outline-2 focus-visible:outline-burgundy-700 rounded">Clear all</button>
+  </div>
 </div>
 
-<script>
-  // Backing value for each combobox, keyed by input id. For "exact" mode
-  // comboboxes (Book, Year) this only updates when an option is actually
-  // chosen; for "substring" mode (Series) it tracks the typed text live.
-  type ComboboxHandle = { getValue: () => string; setValue: (value: string) => void };
-
-  function setupCombobox(wrapper: HTMLElement, onChange: () => void): ComboboxHandle {
-    const input = wrapper.querySelector('input') as HTMLInputElement;
-    const listbox = wrapper.querySelector('ul[role="listbox"]') as HTMLUListElement;
-    const options = Array.from(listbox.querySelectorAll<HTMLLIElement>('[role="option"]'));
-    const mode = wrapper.dataset.filterMode === 'exact' ? 'exact' : 'substring';
-
-    let activeIndex = -1;
-    let selectedValue = '';
-
-    function visibleOptions() {
-      return options.filter((opt) => !opt.classList.contains('hidden'));
-    }
-
-    function setActive(index: number) {
-      const visible = visibleOptions();
-      visible.forEach((opt) => opt.removeAttribute('aria-selected'));
-      activeIndex = index;
-      const target = visible[index];
-      if (target) {
-        target.setAttribute('aria-selected', 'true');
-        target.scrollIntoView({ block: 'nearest' });
-      }
-    }
-
-    function openListbox() {
-      listbox.classList.remove('hidden');
-      input.setAttribute('aria-expanded', 'true');
-    }
-
-    function closeListbox() {
-      listbox.classList.add('hidden');
-      input.setAttribute('aria-expanded', 'false');
-      activeIndex = -1;
-      options.forEach((opt) => opt.removeAttribute('aria-selected'));
-    }
-
-    function filterOptions() {
-      const query = input.value.trim().toLowerCase();
-      options.forEach((opt) => {
-        const text = (opt.dataset.label || opt.dataset.value || '').toLowerCase();
-        opt.classList.toggle('hidden', !text.includes(query));
-      });
-    }
-
-    function chooseOption(opt: HTMLLIElement) {
-      input.value = opt.dataset.label || opt.dataset.value || '';
-      selectedValue = opt.dataset.value || '';
-      closeListbox();
-      onChange();
-    }
-
-    input.addEventListener('focus', () => {
-      filterOptions();
-      openListbox();
-    });
-
-    input.addEventListener('input', () => {
-      filterOptions();
-      openListbox();
-      if (mode === 'substring') {
-        onChange();
-      } else if (input.value.trim() === '') {
-        selectedValue = '';
-        onChange();
-      }
-    });
-
-    input.addEventListener('keydown', (e) => {
-      const visible = visibleOptions();
-      if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        if (listbox.classList.contains('hidden')) openListbox();
-        setActive(Math.min(activeIndex + 1, visible.length - 1));
-      } else if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        setActive(Math.max(activeIndex - 1, 0));
-      } else if (e.key === 'Enter') {
-        if (activeIndex >= 0 && visible[activeIndex]) {
-          e.preventDefault();
-          chooseOption(visible[activeIndex]);
-        }
-      } else if (e.key === 'Escape') {
-        closeListbox();
-      }
-    });
-
-    options.forEach((opt) => {
-      opt.addEventListener('mousedown', (e) => e.preventDefault());
-      opt.addEventListener('click', () => chooseOption(opt));
-    });
-
-    document.addEventListener('click', (e) => {
-      if (!wrapper.contains(e.target as Node)) {
-        // Exact-mode combos: if the user typed text but never picked an
-        // option, snap the displayed text back to whatever is actually
-        // selected (or blank, if nothing is).
-        if (mode === 'exact') {
-          const selectedOpt = options.find((o) => o.dataset.value === selectedValue);
-          input.value = selectedOpt ? (selectedOpt.dataset.label || selectedValue) : '';
-        }
-        closeListbox();
-      }
-    });
-
-    return {
-      getValue: () => (mode === 'substring' ? input.value.trim().toLowerCase() : selectedValue),
-      setValue: (value: string) => {
-        const opt = options.find((o) => o.dataset.value === value);
-        input.value = opt ? (opt.dataset.label || value) : value;
-        selectedValue = value;
-      },
-    };
+<style>
+  .sf-bookcol { columns: 2; column-gap: 1.25rem; }
+  .sf-bookitem {
+    break-inside: avoid; display: flex; justify-content: space-between; gap: .75rem; width: 100%;
+    padding: .2rem .4rem; border-radius: 3px; font-size: .85rem; color: var(--color-burgundy-900);
+    cursor: pointer; background: none; border: 0; text-align: left;
   }
+  .sf-bookitem:hover { background: var(--color-burgundy-50); }
+  .sf-bookitem .sf-c { color: var(--color-wheat-700); font-weight: 700; font-size: .7rem; }
+  .sf-menu { box-shadow: 0 10px 30px -12px rgba(60, 20, 30, .35); }
+</style>
 
-  function initSermonFilter() {
-    const root = document.getElementById('sermon-filter');
-    const grid = document.getElementById('sermon-grid');
-    if (!root || !grid) return;
+<script>
+  function initSermonArchive() {
+    const filter = document.getElementById('sermon-filter');
+    const listEl = document.getElementById('sermon-list');
+    if (!filter || !listEl) return;
 
-    const pageSize = Number(root.dataset.pageSize) || 24;
+    const rows = Array.from(document.querySelectorAll<HTMLElement>('.sermon-row'));
     const searchInput = document.getElementById('sermon-search') as HTMLInputElement | null;
-    const resultCount = document.getElementById('sermon-result-count');
-    const loadMoreBtn = document.getElementById('sermon-load-more') as HTMLButtonElement | null;
-    const emptyState = document.getElementById('sermon-empty-state');
-    const pills = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-sermon-pill]'));
+    const sizeSelect = document.getElementById('sermon-size') as HTMLSelectElement | null;
 
-    const cards = Array.from(grid.querySelectorAll<HTMLElement>('[data-sermon-card]'));
+    const heroSection = document.getElementById('sermon-heroes-section');
+    const heroesEl = document.getElementById('sermon-heroes');
+    const heroLabel = document.getElementById('sermon-hero-label');
+    const heroHint = document.getElementById('sermon-hero-hint');
 
-    let visibleCount = pageSize;
+    const listSection = document.getElementById('sermon-list-section');
+    const listLabel = document.getElementById('sermon-list-label');
+    const countEl = document.getElementById('sermon-count');
+    const emptyEl = document.getElementById('sermon-empty');
+    const pager = document.getElementById('sermon-pager');
 
-    function matches(card: HTMLElement, query: string, seriesQuery: string, book: string, year: string) {
-      if (seriesQuery && !(card.dataset.series || '').toLowerCase().includes(seriesQuery)) return false;
-      const tags = (card.dataset.tags || '').split('|');
-      if (book && !tags.includes(book)) return false;
-      if (year && !tags.includes(year)) return false;
-      if (query) {
-        const haystack = card.dataset.search || '';
-        if (!haystack.includes(query)) return false;
-      }
+    const chipRow = document.getElementById('sermon-chiprow');
+    const chipsEl = document.getElementById('sermon-chips');
+    const clearBtn = document.getElementById('sermon-clear');
+
+    const bookBtn = document.getElementById('sermon-book-btn');
+    const bookMenu = document.getElementById('sermon-book-menu');
+    const bookVal = document.getElementById('sermon-book-val');
+    const topicBtn = document.getElementById('sermon-topic-btn');
+    const topicMenu = document.getElementById('sermon-topic-menu');
+    const topicVal = document.getElementById('sermon-topic-val');
+
+    const HERO_COUNT = 6;
+    let fQ = '', fBook = '', fTopic = '', page = 1;
+    let pageSize = sizeSelect ? Number(sizeSelect.value) || 15 : 15;
+
+    // ---- read initial state from URL ----
+    const params = new URLSearchParams(location.search);
+    fBook = params.get('book') || '';
+    fTopic = params.get('topic') || '';
+    fQ = (params.get('q') || '').toLowerCase();
+    if (params.get('size') && sizeSelect) {
+      const s = Number(params.get('size'));
+      if ([15, 30, 50].includes(s)) { pageSize = s; sizeSelect.value = String(s); }
+    }
+    page = Math.max(1, Number(params.get('page')) || 1);
+    if (searchInput && fQ) searchInput.value = fQ;
+
+    const esc = (s: string) =>
+      (s || '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c] as string));
+
+    function heroCard(d: DOMStringMap) {
+      const video = d.video === '1';
+      const dur = d.duration
+        ? `<span class="flex-shrink-0 bg-stone-100 text-stone-600 text-xs font-body font-semibold px-2.5 py-1 rounded-full">${esc(d.duration)}</span>`
+        : '';
+      return `<article class="bg-warm-white rounded-lg border border-stone-200 overflow-hidden shadow-sm hover:shadow-md card-lift flex flex-col h-full">
+        <div class="h-1 bg-gradient-to-r from-burgundy-700 to-burgundy-500" aria-hidden="true"></div>
+        <div class="p-6 md:p-7 flex flex-col flex-1">
+          <p class="font-display text-lg font-semibold text-burgundy-900 mb-1.5">${esc(d.scripture || '')}</p>
+          <h3 class="font-display text-xl md:text-2xl font-bold text-stone-900 leading-snug mb-3">${esc(d.title || '')}</h3>
+          <div class="flex items-center justify-between mb-4 gap-2">
+            <p class="text-stone-500 text-sm font-body"><time datetime="${esc(d.iso || '')}" class="font-semibold text-stone-700">${esc(d.date || '')}</time></p>
+            ${dur}
+          </div>
+          <p class="text-stone-600 text-base leading-relaxed mb-5 line-clamp-3 flex-1">${esc(d.desc || '')}</p>
+          <div class="mt-auto border-t border-stone-100 pt-4 flex items-center justify-between gap-3">
+            <a href="${esc(d.href || '#')}" class="inline-flex items-center gap-2 text-burgundy-800 font-body font-semibold text-sm hover:text-burgundy-600 transition-colors group focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-burgundy-700 rounded">
+              <span class="w-8 h-8 rounded-full bg-burgundy-50 border border-burgundy-200 flex items-center justify-center group-hover:bg-burgundy-100 transition-colors flex-shrink-0"><svg class="w-3.5 h-3.5 text-burgundy-800 ml-0.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span>
+              ${video ? 'Watch Message' : 'Listen'}
+            </a>
+            <span class="text-stone-400 text-[0.7rem] font-body">${esc(d.speaker || '')}</span>
+          </div>
+        </div>
+      </article>`;
+    }
+
+    function matches(row: HTMLElement) {
+      if (fBook && row.dataset.book !== fBook) return false;
+      if (fTopic && !(row.dataset.topics || '').split('|').includes(fTopic)) return false;
+      if (fQ && !(row.dataset.search || '').includes(fQ)) return false;
       return true;
     }
 
-    function updatePillStates(seriesQuery: string, book: string, query: string) {
-      pills.forEach((pill) => {
-        const { type, value } = pill.dataset;
-        const valueLower = (value || '').toLowerCase();
-        let active = false;
-        if (type === 'series') active = seriesQuery === valueLower;
-        else if (type === 'book') active = book === value;
-        else active = query === valueLower;
-        pill.setAttribute('aria-pressed', String(active));
-      });
+    function pageWindow(cur: number, total: number) {
+      const out: (number | '…')[] = [];
+      for (let p = 1; p <= total; p++) {
+        if (p === 1 || p === total || (p >= cur - 1 && p <= cur + 1)) out.push(p);
+        else if (out[out.length - 1] !== '…') out.push('…');
+      }
+      return out;
+    }
+
+    function syncUrl() {
+      const p = new URLSearchParams();
+      if (fQ) p.set('q', fQ);
+      if (fBook) p.set('book', fBook);
+      if (fTopic) p.set('topic', fTopic);
+      if (pageSize !== 15) p.set('size', String(pageSize));
+      if (page > 1) p.set('page', String(page));
+      const qs = p.toString();
+      history.replaceState(null, '', qs ? `?${qs}` : location.pathname);
     }
 
     function render() {
-      const query = (searchInput?.value || '').trim().toLowerCase();
-      const seriesQuery = seriesCombobox?.getValue() || '';
-      const book = bookCombobox?.getValue() || '';
-      const year = yearCombobox?.getValue() || '';
+      const matching = rows.filter(matches);
+      const searching = fQ !== '';
+      const heroN = searching ? 0 : Math.min(HERO_COUNT, matching.length);
+      const heroRows = matching.slice(0, heroN);
+      const listRows = matching.slice(heroN);
+      const noMatches = matching.length === 0;
 
-      let shown = 0;
-      let matched = 0;
+      const totalPages = Math.max(1, Math.ceil(listRows.length / pageSize));
+      if (page > totalPages) page = totalPages;
+      const start = (page - 1) * pageSize;
+      const end = Math.min(start + pageSize, listRows.length);
 
-      cards.forEach((card) => {
-        const isMatch = matches(card, query, seriesQuery, book, year);
-        if (isMatch) matched += 1;
-        const shouldShow = isMatch && matched <= visibleCount;
-        card.classList.toggle('hidden', !shouldShow);
-        if (shouldShow) shown += 1;
-      });
+      rows.forEach((r) => { r.hidden = true; });
+      for (let i = start; i < end; i++) listRows[i].hidden = false;
 
-      if (resultCount) {
-        resultCount.textContent = matched === 0
-          ? 'No sermons match your search.'
-          : `Showing ${shown} of ${matched} sermon${matched === 1 ? '' : 's'}`;
-      }
+      // heroes
+      if (heroesEl) heroesEl.innerHTML = heroRows.map((r) => heroCard(r.dataset)).join('');
+      if (heroLabel) heroLabel.textContent = fBook ? `Latest in ${fBook}` : fTopic ? `Latest on #${fTopic}` : 'Most Recent';
+      if (heroHint) heroHint.textContent = (fBook || fTopic) && !searching ? `${matching.length} total` : '';
+      if (heroSection) heroSection.hidden = noMatches || heroN === 0;
 
-      if (loadMoreBtn) {
-        loadMoreBtn.classList.toggle('hidden', matched <= visibleCount);
-      }
+      // list
+      if (listSection) listSection.hidden = noMatches || listRows.length === 0;
+      if (listLabel) listLabel.textContent = searching ? 'Search results' : heroN > 0 ? 'Earlier Messages' : 'Messages';
+      if (countEl) countEl.textContent = listRows.length
+        ? `Showing ${start + 1}–${end} of ${listRows.length}${searching ? ` result${listRows.length === 1 ? '' : 's'}` : ''}`
+        : '';
+      if (emptyEl) emptyEl.hidden = !noMatches;
 
-      if (emptyState) {
-        emptyState.classList.toggle('hidden', matched !== 0);
-      }
-
-      updatePillStates(seriesQuery, book, query);
-    }
-
-    function onFilterChange() {
-      visibleCount = pageSize;
-      render();
-    }
-
-    const seriesWrapper = document.querySelector('#sermon-filter-series')?.closest('[data-combobox]') as HTMLElement | null;
-    const bookWrapper = document.querySelector('#sermon-filter-book')?.closest('[data-combobox]') as HTMLElement | null;
-    const yearWrapper = document.querySelector('#sermon-filter-year')?.closest('[data-combobox]') as HTMLElement | null;
-
-    const seriesCombobox = seriesWrapper ? setupCombobox(seriesWrapper, onFilterChange) : null;
-    const bookCombobox = bookWrapper ? setupCombobox(bookWrapper, onFilterChange) : null;
-    const yearCombobox = yearWrapper ? setupCombobox(yearWrapper, onFilterChange) : null;
-
-    searchInput?.addEventListener('input', onFilterChange);
-
-    pills.forEach((pill) => {
-      pill.addEventListener('click', () => {
-        const { type, value } = pill.dataset;
-        const alreadyActive = pill.getAttribute('aria-pressed') === 'true';
-        const newValue = alreadyActive ? '' : (value || '');
-
-        if (type === 'series') {
-          seriesCombobox?.setValue(newValue);
-        } else if (type === 'book') {
-          bookCombobox?.setValue(newValue);
-        } else if (searchInput) {
-          searchInput.value = newValue;
+      // pager
+      if (pager) {
+        pager.innerHTML = '';
+        if (totalPages > 1) {
+          const mk = (label: string, target: number, opts: { cur?: boolean; dis?: boolean } = {}) => {
+            const b = document.createElement('button');
+            b.type = 'button';
+            b.textContent = label;
+            b.className = 'min-w-[2.25rem] h-9 inline-flex items-center justify-center border rounded text-sm transition-colors ' +
+              (opts.cur ? 'bg-burgundy-900 text-warm-white border-burgundy-900 font-bold'
+                        : 'bg-warm-white text-burgundy-900 border-stone-300 hover:border-burgundy-700') +
+              (opts.dis ? ' opacity-40 cursor-default' : '');
+            if (opts.cur) b.setAttribute('aria-current', 'page');
+            if (opts.dis) b.disabled = true;
+            else b.addEventListener('click', () => {
+              page = target;
+              render();
+              listLabel?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+            return b;
+          };
+          pager.appendChild(mk('‹ Prev', page - 1, { dis: page === 1 }));
+          pageWindow(page, totalPages).forEach((p) => {
+            if (p === '…') {
+              const span = document.createElement('span');
+              span.textContent = '…';
+              span.className = 'px-1 text-stone-400';
+              pager.appendChild(span);
+            } else {
+              pager.appendChild(mk(String(p), p, { cur: p === page }));
+            }
+          });
+          pager.appendChild(mk('Next ›', page + 1, { dis: page === totalPages }));
         }
+      }
 
-        onFilterChange();
+      // chips
+      const active = Boolean(fQ || fBook || fTopic);
+      if (chipRow) { chipRow.hidden = !active; chipRow.classList.toggle('flex', active); }
+      if (chipsEl) {
+        chipsEl.innerHTML = '';
+        const addChip = (label: string, onRemove: () => void) => {
+          const span = document.createElement('span');
+          span.className = 'inline-flex items-center gap-1.5 bg-burgundy-900 text-warm-white text-xs font-semibold px-2.5 py-1 rounded-full';
+          const txt = document.createElement('span');
+          txt.textContent = label;
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.textContent = '✕';
+          btn.setAttribute('aria-label', `Remove ${label} filter`);
+          btn.className = 'text-burgundy-200 hover:text-warm-white';
+          btn.addEventListener('click', onRemove);
+          span.append(txt, btn);
+          chipsEl.appendChild(span);
+        };
+        if (fBook) addChip(fBook, () => { fBook = ''; reset(); });
+        if (fTopic) addChip('#' + fTopic, () => { fTopic = ''; reset(); });
+        if (fQ) addChip(`“${fQ}”`, () => { fQ = ''; if (searchInput) searchInput.value = ''; reset(); });
+      }
+      if (bookVal) bookVal.textContent = fBook ? `· ${fBook}` : '';
+      if (topicVal) topicVal.textContent = fTopic ? `· #${fTopic}` : '';
+      if (bookBtn) bookBtn.setAttribute('aria-expanded', String(!bookMenu?.classList.contains('hidden')));
+      if (topicBtn) topicBtn.setAttribute('aria-expanded', String(!topicMenu?.classList.contains('hidden')));
+
+      syncUrl();
+    }
+
+    function reset() { page = 1; render(); }
+
+    // ---- events ----
+    searchInput?.addEventListener('input', () => { fQ = searchInput.value.trim().toLowerCase(); reset(); });
+    sizeSelect?.addEventListener('change', () => { pageSize = Number(sizeSelect.value) || 15; reset(); });
+    clearBtn?.addEventListener('click', () => { fQ = fBook = fTopic = ''; if (searchInput) searchInput.value = ''; reset(); });
+
+    function closeMenus() { bookMenu?.classList.add('hidden'); topicMenu?.classList.add('hidden'); }
+    function wireMenu(btn: HTMLElement | null, menu: HTMLElement | null) {
+      btn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const open = !menu?.classList.contains('hidden');
+        closeMenus();
+        if (!open) menu?.classList.remove('hidden');
+        btn.setAttribute('aria-expanded', String(!open));
       });
+    }
+    wireMenu(bookBtn, bookMenu);
+    wireMenu(topicBtn, topicMenu);
+    document.addEventListener('click', closeMenus);
+    bookMenu?.addEventListener('click', (e) => {
+      const item = (e.target as HTMLElement).closest<HTMLElement>('[data-book]');
+      if (item) { fBook = item.dataset.book || ''; closeMenus(); reset(); }
+      e.stopPropagation();
     });
-
-    loadMoreBtn?.addEventListener('click', () => {
-      visibleCount += pageSize;
-      render();
+    topicMenu?.addEventListener('click', (e) => {
+      const item = (e.target as HTMLElement).closest<HTMLElement>('[data-topic]');
+      if (item) { fTopic = item.dataset.topic || ''; closeMenus(); reset(); }
+      e.stopPropagation();
     });
 
     render();
   }
 
-  initSermonFilter();
+  initSermonArchive();
 </script>

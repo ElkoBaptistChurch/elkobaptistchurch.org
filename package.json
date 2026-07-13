@@ -8,9 +8,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "check": "astro check",
-    "sermons:sync": "node scripts/sync-sermons.mjs",
-    "sermons:reimport": "node scripts/sync-sermons.mjs --clear"
+    "check": "astro check"
   },
   "dependencies": {
     "astro": "^5.0.0",

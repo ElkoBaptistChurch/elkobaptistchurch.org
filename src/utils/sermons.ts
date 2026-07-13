@@ -3,69 +3,58 @@ import { BIBLE_BOOKS } from '@/utils/bible-books';
 
 export type SermonEntry = CollectionEntry<'sermons'>;
 
+const BOOK_SET = new Set<string>(BIBLE_BOOKS);
+// BIBLE_BOOKS is in canonical order, so everything before Matthew is OT.
+const NT_START = BIBLE_BOOKS.indexOf('Matthew');
+const OT_BOOKS = BIBLE_BOOKS.slice(0, NT_START) as readonly string[];
+const NT_BOOKS = BIBLE_BOOKS.slice(NT_START) as readonly string[];
+
 export function sortByDateDesc(entries: SermonEntry[]): SermonEntry[] {
   return [...entries].sort((a, b) => b.data.date.localeCompare(a.data.date));
 }
 
-// Flattens a collection entry into the shape SermonCard expects.
+// Flattens a collection entry into the shape SermonCard/SermonRow expect.
 export function toCardProps(entry: SermonEntry) {
   return { id: entry.id, ...entry.data };
 }
 
-export function getSeriesList(entries: SermonEntry[]): string[] {
-  return [...new Set(entries.map((e) => e.data.series).filter((s): s is string => Boolean(s)))];
+// A sermon's book is the first tag that matches a canonical Bible book.
+export function sermonBook(tags: string[]): string | undefined {
+  return tags.find((t) => BOOK_SET.has(t));
 }
 
-export function getYearTags(entries: SermonEntry[]): string[] {
-  const years = new Set<string>();
-  entries.forEach((e) => e.data.tags.forEach((t) => {
-    if (/^\d{4}Sermons$/.test(t)) years.add(t);
-  }));
-  return [...years].sort().reverse();
+// Topic tags = everything that isn't a year tag (e.g. "2026Sermons") or a Bible book.
+export function sermonTopics(tags: string[]): string[] {
+  return tags.filter((t) => !BOOK_SET.has(t) && !/^\d{4}Sermons$/.test(t));
 }
 
-export function getBookTags(entries: SermonEntry[]): string[] {
-  const books = new Set<string>();
-  entries.forEach((e) => e.data.tags.forEach((t) => {
-    if ((BIBLE_BOOKS as readonly string[]).includes(t)) books.add(t);
-  }));
-  return [...books].sort();
-}
-
-export interface RecentPill {
-  type: 'series' | 'book' | 'tag';
+export interface Facet {
   value: string;
+  count: number;
 }
 
-// A small "recently used" cloud of filters, pulled from the most recent
-// sermons (not the whole archive) so it stays relevant as the archive grows
-// into the hundreds. Mixes series, scripture books, and topic tags, capped
-// to `limit` total and ordered by recency of first appearance.
-export function getRecentPills(
-  entries: SermonEntry[],
-  { limit = 10, recentCount = 20 }: { limit?: number; recentCount?: number } = {},
-): RecentPill[] {
-  const pool = entries.slice(0, recentCount);
-  const seen = new Set<string>();
-  const pills: RecentPill[] = [];
+// Books that actually have sermons, split into the two testaments and kept in
+// canonical order, each with a count — powers the Book filter dropdown.
+export function getBookFacets(entries: SermonEntry[]): { ot: Facet[]; nt: Facet[] } {
+  const counts = new Map<string, number>();
+  entries.forEach((e) => {
+    const b = sermonBook(e.data.tags);
+    if (b) counts.set(b, (counts.get(b) ?? 0) + 1);
+  });
+  const pick = (list: readonly string[]): Facet[] =>
+    list.filter((b) => counts.has(b)).map((b) => ({ value: b, count: counts.get(b)! }));
+  return { ot: pick(OT_BOOKS), nt: pick(NT_BOOKS) };
+}
 
-  for (const entry of pool) {
-    if (pills.length >= limit) break;
-
-    if (entry.data.series && !seen.has(entry.data.series)) {
-      seen.add(entry.data.series);
-      pills.push({ type: 'series', value: entry.data.series });
-    }
-
-    for (const tag of entry.data.tags) {
-      if (/^\d{4}Sermons$/.test(tag) || seen.has(tag)) continue;
-      seen.add(tag);
-      const type = (BIBLE_BOOKS as readonly string[]).includes(tag) ? 'book' : 'tag';
-      pills.push({ type, value: tag });
-    }
-  }
-
-  return pills.slice(0, limit);
+// Topic tags with counts, most common first — powers the Topic filter dropdown.
+export function getTopicFacets(entries: SermonEntry[]): Facet[] {
+  const counts = new Map<string, number>();
+  entries.forEach((e) =>
+    sermonTopics(e.data.tags).forEach((t) => counts.set(t, (counts.get(t) ?? 0) + 1)),
+  );
+  return [...counts.entries()]
+    .map(([value, count]) => ({ value, count }))
+    .sort((a, b) => b.count - a.count || a.value.localeCompare(b.value));
 }
 
 export function formatSermonDate(isoDate: string): string {

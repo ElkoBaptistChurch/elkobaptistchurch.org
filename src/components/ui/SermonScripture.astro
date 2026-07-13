@@ -1,0 +1,80 @@
+---
+// Read-along passage panel.
+//
+// The KJV verse text is resolved at build time from the committed Bible data
+// (see src/utils/bible.ts) and passed in as `passage`. When it resolves we render
+// the verses inline; when it doesn't (an unusual reference the parser can't
+// handle) we degrade gracefully to a "read the full chapter" link out.
+import type { Passage } from '@/utils/bible';
+
+interface Props {
+  scripture: string;
+  passage?: Passage | null;
+}
+
+const { scripture, passage } = Astro.props;
+const translation = passage?.translation ?? 'KJV';
+
+// Normalize en/em dashes to a plain hyphen for URL/search use.
+const query = scripture.replace(/[–—]/g, '-');
+const gatewayUrl = `https://www.biblegateway.com/passage/?search=${encodeURIComponent(query)}&version=${translation}`;
+---
+
+<div class="sermon-scripture">
+  <div class="flex items-center justify-between mb-4">
+    <p class="font-display text-lg font-bold text-burgundy-900">{scripture}</p>
+    <span class="text-[0.65rem] font-body font-bold tracking-wider text-stone-400 bg-stone-100 px-2 py-1 rounded">
+      {translation}
+    </span>
+  </div>
+
+  {passage && passage.verses.length > 0 ? (
+    <>
+      <ol class="sermon-verses space-y-3">
+        {passage.verses.map((v) => (
+          <li class="flex gap-3 text-stone-700 text-base md:text-lg leading-relaxed">
+            <span class="font-display text-sm font-bold text-wheat-700 pt-1 select-none flex-shrink-0 tabular-nums" aria-hidden="true">
+              {v.num}
+            </span>
+            <span><span class="sr-only">Verse {v.num}. </span>{v.text}</span>
+          </li>
+        ))}
+      </ol>
+      <p class="mt-6 pt-4 border-t border-stone-200 text-sm text-stone-500">
+        King James Version (public domain).
+        <a
+          href={gatewayUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-1 text-burgundy-800 font-semibold hover:text-burgundy-600 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-burgundy-700 rounded ml-1"
+        >
+          Read the full chapter
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+          </svg>
+        </a>
+      </p>
+    </>
+  ) : (
+    <!-- Fallback: reference couldn't be resolved to inline text. Link out. -->
+    <div class="rounded-lg border border-dashed border-stone-300 bg-cream/70 p-5 text-center">
+      <svg class="w-6 h-6 text-wheat-600 mx-auto mb-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+      </svg>
+      <p class="text-stone-600 text-sm leading-relaxed mb-4">
+        Read the full passage to follow along with the message.
+      </p>
+      <a
+        href={gatewayUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-1.5 text-burgundy-800 font-body font-semibold text-sm hover:text-burgundy-600 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-burgundy-700 rounded"
+      >
+        Read {scripture}
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+        </svg>
+      </a>
+    </div>
+  )}
+</div>
