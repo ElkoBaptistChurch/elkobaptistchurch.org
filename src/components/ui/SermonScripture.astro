@@ -22,7 +22,7 @@ const gatewayUrl = `https://www.biblegateway.com/passage/?search=${encodeURIComp
 
 <div class="sermon-scripture">
   <div class="flex items-center justify-between mb-4">
-    <p class="font-display text-lg font-bold text-burgundy-900">{scripture}</p>
+    <p class="font-body text-lg font-bold text-burgundy-900">{scripture}</p>
     <span class="text-[0.65rem] font-body font-bold tracking-wider text-stone-400 bg-stone-100 px-2 py-1 rounded">
       {translation}
     </span>
@@ -33,7 +33,7 @@ const gatewayUrl = `https://www.biblegateway.com/passage/?search=${encodeURIComp
       <ol class="sermon-verses space-y-3">
         {passage.verses.map((v) => (
           <li class="flex gap-3 text-stone-700 text-base md:text-lg leading-relaxed">
-            <span class="font-display text-sm font-bold text-wheat-700 pt-1 select-none flex-shrink-0 tabular-nums" aria-hidden="true">
+            <span class="font-body text-sm font-bold text-wheat-700 pt-1 select-none flex-shrink-0 tabular-nums" aria-hidden="true">
               {v.num}
             </span>
             <span><span class="sr-only">Verse {v.num}. </span>{v.text}</span>

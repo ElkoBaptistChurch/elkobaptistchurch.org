@@ -7,10 +7,11 @@ interface Props {
   youtubeId?: string;
   title: string;
   duration?: string;
+  startSeconds?: number;
   class?: string;
 }
 
-const { youtubeId, title, duration, class: className = '' } = Astro.props;
+const { youtubeId, title, duration, startSeconds, class: className = '' } = Astro.props;
 ---
 
 {youtubeId ? (
@@ -21,6 +22,7 @@ const { youtubeId, title, duration, class: className = '' } = Astro.props;
     ]}
     data-yt={youtubeId}
     data-title={title}
+    data-start={startSeconds ? startSeconds : undefined}
   >
     <img
       src={`https://img.youtube.com/vi/${youtubeId}/maxresdefault.jpg`}
@@ -75,8 +77,10 @@ const { youtubeId, title, duration, class: className = '' } = Astro.props;
     if (!id) return;
     player.dataset.loaded = '1';
     const title = (player.dataset.title || 'Sermon video').replace(/"/g, '&quot;');
+    const start = player.dataset.start;
+    const startParam = start ? `&start=${start}` : '';
     player.innerHTML =
-      `<iframe src="https://www.youtube.com/embed/${id}?autoplay=1" title="${title}" ` +
+      `<iframe src="https://www.youtube.com/embed/${id}?autoplay=1${startParam}" title="${title}" ` +
       `allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" ` +
       `allowfullscreen class="w-full h-full"></iframe>`;
   });

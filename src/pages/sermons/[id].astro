@@ -75,7 +75,7 @@ if (sermon.youtubeId) {
     description: sermon.description,
     thumbnailUrl: [`https://img.youtube.com/vi/${sermon.youtubeId}/maxresdefault.jpg`],
     uploadDate: sermon.date,
-    embedUrl: `https://www.youtube.com/embed/${sermon.youtubeId}`,
+    embedUrl: `https://www.youtube.com/embed/${sermon.youtubeId}${sermon.startSeconds ? `?start=${sermon.startSeconds}` : ''}`,
     contentUrl: `https://www.youtube.com/watch?v=${sermon.youtubeId}`,
     publisher: {
       '@type': 'Organization',
@@ -113,7 +113,7 @@ if (sermon.youtubeId) {
       <div class="grid lg:grid-cols-[1fr_320px] gap-8 lg:gap-10 items-start">
         <!-- Main column: video, then tabs -->
         <div>
-          <SermonPlayer youtubeId={sermon.youtubeId} title={sermon.title} duration={sermon.duration} />
+          <SermonPlayer youtubeId={sermon.youtubeId} title={sermon.title} duration={sermon.duration} startSeconds={sermon.startSeconds} />
 
           <!-- Tabs under the video: Read the Passage (default) | About This Message -->
           <div id="sermon-tabs" class="mt-8">
@@ -188,7 +188,7 @@ if (sermon.youtubeId) {
           <div class="mt-6 grid gap-3">
             {sermon.youtubeId && (
               <Button
-                href={`https://www.youtube.com/watch?v=${sermon.youtubeId}`}
+                href={`https://www.youtube.com/watch?v=${sermon.youtubeId}${sermon.startSeconds ? `&t=${sermon.startSeconds}s` : ''}`}
                 variant="primary"
                 size="md"
                 class="w-full"

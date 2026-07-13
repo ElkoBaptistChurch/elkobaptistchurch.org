@@ -152,10 +152,10 @@ const { bookFacets, topicFacets } = Astro.props;
       const dur = d.duration
         ? `<span class="flex-shrink-0 bg-stone-100 text-stone-600 text-xs font-body font-semibold px-2.5 py-1 rounded-full">${esc(d.duration)}</span>`
         : '';
-      return `<article class="bg-warm-white rounded-lg border border-stone-200 overflow-hidden shadow-sm hover:shadow-md card-lift flex flex-col h-full">
+      return `<article class="relative bg-warm-white rounded-lg border border-stone-200 overflow-hidden shadow-sm hover:shadow-md card-lift flex flex-col h-full">
         <div class="h-1 bg-gradient-to-r from-burgundy-700 to-burgundy-500" aria-hidden="true"></div>
         <div class="p-6 md:p-7 flex flex-col flex-1">
-          <p class="font-display text-lg font-semibold text-burgundy-900 mb-1.5">${esc(d.scripture || '')}</p>
+          <p class="font-body text-lg font-semibold text-burgundy-900 mb-1.5">${esc(d.scripture || '')}</p>
           <h3 class="font-display text-xl md:text-2xl font-bold text-stone-900 leading-snug mb-3">${esc(d.title || '')}</h3>
           <div class="flex items-center justify-between mb-4 gap-2">
             <p class="text-stone-500 text-sm font-body"><time datetime="${esc(d.iso || '')}" class="font-semibold text-stone-700">${esc(d.date || '')}</time></p>
@@ -163,11 +163,11 @@ const { bookFacets, topicFacets } = Astro.props;
           </div>
           <p class="text-stone-600 text-base leading-relaxed mb-5 line-clamp-3 flex-1">${esc(d.desc || '')}</p>
           <div class="mt-auto border-t border-stone-100 pt-4 flex items-center justify-between gap-3">
-            <a href="${esc(d.href || '#')}" class="inline-flex items-center gap-2 text-burgundy-800 font-body font-semibold text-sm hover:text-burgundy-600 transition-colors group focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-burgundy-700 rounded">
+            <a href="${esc(d.href || '#')}" class="inline-flex items-center gap-2 text-burgundy-800 font-body font-semibold text-sm hover:text-burgundy-600 transition-colors group focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-burgundy-700 rounded after:absolute after:inset-0 after:content-['']">
               <span class="w-8 h-8 rounded-full bg-burgundy-50 border border-burgundy-200 flex items-center justify-center group-hover:bg-burgundy-100 transition-colors flex-shrink-0"><svg class="w-3.5 h-3.5 text-burgundy-800 ml-0.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span>
               ${video ? 'Watch Message' : 'Listen'}
             </a>
-            <span class="text-stone-400 text-[0.7rem] font-body">${esc(d.speaker || '')}</span>
+            <span class="relative text-stone-400 text-[0.7rem] font-body">${esc(d.speaker || '')}</span>
           </div>
         </div>
       </article>`;

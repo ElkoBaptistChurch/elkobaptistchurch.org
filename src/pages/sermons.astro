@@ -130,7 +130,7 @@ const initiallyVisible = (i: number) =>
               {latestSermon.youtubeId ? (
                 <div class="aspect-video lg:aspect-auto lg:h-full">
                   <iframe
-                    src={`https://www.youtube.com/embed/${latestSermon.youtubeId}`}
+                    src={`https://www.youtube.com/embed/${latestSermon.youtubeId}${latestSermon.startSeconds ? `?start=${latestSermon.startSeconds}` : ''}`}
                     title={latestSermon.title}
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowfullscreen
@@ -189,14 +189,14 @@ const initiallyVisible = (i: number) =>
                 <span>{latestSermon.speaker}</span>
               </p>
 
-              <p class="text-stone-600 text-lg leading-relaxed mb-8">
+              <p class="text-stone-600 text-base leading-relaxed mb-8 line-clamp-5">
                 {latestSermon.description}
               </p>
 
               <div class="flex flex-col sm:flex-row gap-3">
                 <Button
                   href={latestSermon.youtubeId
-                    ? `https://www.youtube.com/watch?v=${latestSermon.youtubeId}`
+                    ? `https://www.youtube.com/watch?v=${latestSermon.youtubeId}${latestSermon.startSeconds ? `&t=${latestSermon.startSeconds}s` : ''}`
                     : `/sermons/${latestSermon.id}/`}
                   variant="primary"
                   size="md"

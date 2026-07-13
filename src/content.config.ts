@@ -22,6 +22,7 @@ const sermons = defineCollection({
     description: z.string(),
     duration: z.string().optional(),
     youtubeId: z.string().optional(),
+    startSeconds: z.number().int().nonnegative().optional(),
     tags: z.array(z.string()).default([]),
   }),
 });

@@ -87,7 +87,7 @@ function formatDate(isoDate: string): string {
           </h3>
 
           <!-- Scripture -->
-          <p class="font-display italic text-wheat-400 text-lg">{latestSermon.scripture}</p>
+          <p class="font-body text-wheat-400 text-lg">{latestSermon.scripture}</p>
 
           <!-- Description -->
           <p class="text-burgundy-200 leading-relaxed line-clamp-3">
@@ -150,7 +150,7 @@ function formatDate(isoDate: string): string {
               <h4 class="font-display font-semibold text-warm-white text-base leading-snug group-hover:text-wheat-300 transition-colors line-clamp-2">
                 {sermon.title}
               </h4>
-              <p class="font-display italic text-wheat-500 text-sm">{sermon.scripture}</p>
+              <p class="font-body text-wheat-500 text-sm">{sermon.scripture}</p>
               {sermon.duration && (
                 <p class="text-burgundy-400 text-xs">{sermon.duration}</p>
               )}
