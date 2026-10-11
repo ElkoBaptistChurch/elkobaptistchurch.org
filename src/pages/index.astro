@@ -8,7 +8,6 @@ import GospelSection from '@/components/sections/GospelSection.astro';
 import SermonsPreview from '@/components/sections/SermonsPreview.astro';
 import VideoSection from '@/components/sections/VideoSection.astro';
 import VisitCTA from '@/components/sections/VisitCTA.astro';
-import { localBusinessSchema } from '@/utils/seo';
 
 
 const description =
@@ -18,7 +17,6 @@ const description =
 <BaseLayout
   title="Home"
   description={description}
-  schema={localBusinessSchema()}
 >
   <Hero />
   <NewHereSection />

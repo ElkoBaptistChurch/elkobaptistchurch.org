@@ -27,15 +27,20 @@ export function buildOgImageUrl(imagePath?: string): string {
     : `${siteConfig.url}/images/og-default.jpg`;
 }
 
-/** JSON-LD: Organization schema (used site-wide) */
-export function organizationSchema(): object {
+/** Stable JSON-LD node identifiers, so entities can reference each other by @id. */
+export const CHURCH_ID = `${siteConfig.url}/#church`;
+export const WEBSITE_ID = `${siteConfig.url}/#website`;
+
+/** JSON-LD node: the church itself (single canonical entity, emitted site-wide). */
+export function churchSchema(): Record<string, unknown> {
   return {
-    '@context': 'https://schema.org',
-    '@type': ['Organization', 'Church'],
+    '@type': ['Church', 'Organization'],
+    '@id': CHURCH_ID,
     name: siteConfig.name,
     alternateName: siteConfig.shortName,
     url: siteConfig.url,
-    logo: `${siteConfig.url}/images/logo.svg`,
+    logo: `${siteConfig.url}/images/logo.png`,
+    image: `${siteConfig.url}/images/Church-outside.jpg`,
     description: siteConfig.description,
     address: {
       '@type': 'PostalAddress',
@@ -45,6 +50,12 @@ export function organizationSchema(): object {
       postalCode: siteConfig.contact.address.zip,
       addressCountry: 'US',
     },
+    geo: {
+      '@type': 'GeoCoordinates',
+      latitude: 32.332915,
+      longitude: -83.708750,
+    },
+    hasMap: siteConfig.contact.mapsUrl,
     email: siteConfig.contact.email,
     sameAs: [siteConfig.social.facebook, siteConfig.social.youtube],
     foundingDate: String(siteConfig.founding.year),
@@ -65,6 +76,26 @@ export function organizationSchema(): object {
   };
 }
 
+/** JSON-LD node: the website, published by the church. */
+export function websiteSchema(): Record<string, unknown> {
+  return {
+    '@type': 'WebSite',
+    '@id': WEBSITE_ID,
+    name: siteConfig.name,
+    url: siteConfig.url,
+    inLanguage: 'en-US',
+    publisher: { '@id': CHURCH_ID },
+  };
+}
+
+/** JSON-LD: site-wide graph (Church + WebSite), emitted once per page by BaseLayout. */
+export function siteSchema(): object {
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [churchSchema(), websiteSchema()],
+  };
+}
+
 /** JSON-LD: WebPage schema */
 export function webPageSchema(meta: {
   title: string;
@@ -78,11 +109,7 @@ export function webPageSchema(meta: {
     name: meta.title,
     description: meta.description,
     url: meta.url,
-    isPartOf: {
-      '@type': 'WebSite',
-      name: siteConfig.name,
-      url: siteConfig.url,
-    },
+    isPartOf: { '@id': WEBSITE_ID },
   };
 
   if (meta.breadcrumbs && meta.breadcrumbs.length > 0) {
@@ -106,32 +133,6 @@ export function webPageSchema(meta: {
   }
 
   return schema;
-}
-
-/** JSON-LD: Local Business / Church for contact/homepage */
-export function localBusinessSchema(): object {
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'LocalBusiness',
-    '@id': `${siteConfig.url}/#church`,
-    name: siteConfig.name,
-    image: `${siteConfig.url}/images/church-exterior.jpg`,
-    url: siteConfig.url,
-    address: {
-      '@type': 'PostalAddress',
-      streetAddress: siteConfig.contact.address.street,
-      addressLocality: siteConfig.contact.address.city,
-      addressRegion: siteConfig.contact.address.state,
-      postalCode: siteConfig.contact.address.zip,
-      addressCountry: 'US',
-    },
-    geo: {
-      '@type': 'GeoCoordinates',
-      latitude: 32.332915,
-      longitude: -83.708750,
-    },
-    priceRange: 'Free',
-  };
 }
 
 /** Serialize JSON-LD for use in <script type="application/ld+json"> */

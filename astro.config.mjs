@@ -7,19 +7,9 @@ export default defineConfig({
   output: 'static',
   integrations: [
     sitemap({
-      changefreq: 'weekly',
-      priority: 0.7,
-      lastmod: new Date(),
-      customPages: [
-        'https://elkobaptistchurch.org/',
-        'https://elkobaptistchurch.org/about/',
-        'https://elkobaptistchurch.org/ministries/',
-        'https://elkobaptistchurch.org/sermons/',
-        'https://elkobaptistchurch.org/plan-your-visit/',
-        'https://elkobaptistchurch.org/staff/',
-        'https://elkobaptistchurch.org/contact/',
-        'https://elkobaptistchurch.org/prayer-requests/',
-      ],
+      // Exclude noIndex pages (prayer-requests, 404) from the sitemap.
+      filter: (page) =>
+        !/\/(prayer-requests|404)\/?$/.test(new URL(page).pathname),
     }),
   ],
   vite: {
