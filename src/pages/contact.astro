@@ -3,9 +3,6 @@ import BaseLayout from '@/components/layout/BaseLayout.astro';
 import Button from '@/components/ui/Button.astro';
 import SectionHeading from '@/components/ui/SectionHeading.astro';
 import { siteConfig } from '@/data/site';
-import { localBusinessSchema } from '@/utils/seo';
-
-const schema = localBusinessSchema();
 
 const description =
   'Contact Elko Baptist Church in Elko, GA (Houston County). Email us at elkobaptistchurch@gmail.com, or visit us at 112 Oak Street, Elko, GA 31025. We\'d love to hear from you.';
@@ -14,7 +11,6 @@ const description =
 <BaseLayout
   title="Contact"
   description={description}
-  schema={schema}
 >
 
   <!-- ============================================================

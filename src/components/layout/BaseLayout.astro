@@ -1,6 +1,6 @@
 ---
 import { siteConfig } from '@/data/site';
-import { buildTitle, buildCanonical, buildOgImageUrl, organizationSchema, jsonLd } from '@/utils/seo';
+import { buildTitle, buildCanonical, buildOgImageUrl, siteSchema, jsonLd } from '@/utils/seo';
 import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
 import '@/styles/global.css';
@@ -28,7 +28,7 @@ const {
 const fullTitle = buildTitle(title);
 const canonical = canonicalUrl ?? buildCanonical(Astro.url.pathname);
 const ogImage = buildOgImageUrl(image);
-const orgSchema = organizationSchema();
+const siteGraph = siteSchema();
 ---
 
 <!doctype html>
@@ -75,8 +75,8 @@ const orgSchema = organizationSchema();
       href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@400;500;600;700&display=swap"
     />
 
-    <!-- JSON-LD: Organization (site-wide) -->
-    <script type="application/ld+json" set:html={jsonLd(orgSchema)} />
+    <!-- JSON-LD: Church + WebSite graph (site-wide) -->
+    <script type="application/ld+json" set:html={jsonLd(siteGraph)} />
 
     <!-- JSON-LD: Page-specific schema -->
     {schema && <script type="application/ld+json" set:html={jsonLd(schema)} />}
