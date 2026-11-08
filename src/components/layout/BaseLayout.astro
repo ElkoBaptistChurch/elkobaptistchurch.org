@@ -38,6 +38,16 @@ const siteGraph = siteSchema();
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
+    <!-- Google tag (gtag.js) — GA4 -->
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-MC4E3702G4"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-MC4E3702G4');
+    </script>
+
     <!-- Primary Meta -->
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
